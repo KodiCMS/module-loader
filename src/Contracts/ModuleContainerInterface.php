@@ -50,11 +50,6 @@ interface ModuleContainerInterface
 	/**
 	 * @return string
 	 */
-	public function getAssetsPackagesPath();
-
-	/**
-	 * @return string
-	 */
 	public function getRoutesPath();
 
 	/**
@@ -78,7 +73,6 @@ interface ModuleContainerInterface
 	 * @return void
 	 */
 	public function loadRoutes(Router $router);
-
 
 	/**
 	 * @return $this

@@ -31,7 +31,7 @@ class ModuleLoader
 	/**
 	 * @param array $modulesList
 	 */
-	public function __construct(array $modulesList)
+	public function __construct(array $modulesList = [])
 	{
 		register_shutdown_function([$this, 'shutdownHandler']);
 
