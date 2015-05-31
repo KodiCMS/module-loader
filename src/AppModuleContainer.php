@@ -12,12 +12,7 @@ class AppModuleContainer extends ModuleContainer
 	 */
 	public function boot()
 	{
-		if (!$this->isBooted)
-		{
-			$this->loadAssets();
-			$this->isBooted = true;
-		}
-
+		$this->isBooted = true;
 		return $this;
 	}
 
@@ -27,7 +22,6 @@ class AppModuleContainer extends ModuleContainer
 	public function register()
 	{
 		$this->isRegistered = true;
-
 		return $this;
 	}
 
