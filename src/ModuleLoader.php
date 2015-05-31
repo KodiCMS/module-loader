@@ -37,7 +37,14 @@ class ModuleLoader
 
 		foreach ($modulesList as $moduleName => $modulePath)
 		{
-			if (is_numeric($moduleName))
+			$moduleNamespace = null;
+
+			if (is_array($modulePath))
+			{
+				$modulePath = array_get($modulePath, 'path');
+				$moduleNamespace = array_get($modulePath, 'namespace');
+			}
+			else if (is_numeric($moduleName))
 			{
 				$moduleName = $modulePath;
 				$modulePath = null;
@@ -48,7 +55,7 @@ class ModuleLoader
 				$modulePath = base_path('modules/' . $moduleName);
 			}
 
-			$this->addModule($moduleName, $modulePath);
+			$this->addModule($moduleName, $modulePath, $moduleNamespace);
 		}
 
 		$appContainerClass = '\\App\\ModuleContainer';
@@ -87,9 +94,14 @@ class ModuleLoader
 	 */
 	public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null)
 	{
+		if (is_null($namespace))
+		{
+			$namespace = '\\Modules\\';
+		}
+
 		if (is_null($moduleContainerClass))
 		{
-			$moduleContainerClass = '\\Modules\\' . $moduleName . '\\ModuleContainer';
+			$moduleContainerClass = $namespace . $moduleName . '\\ModuleContainer';
 		}
 
 		$defaultModuleClass = '\\App\\ModuleLoader\\ModuleContainer';
@@ -100,7 +112,7 @@ class ModuleLoader
 				: '\\KodiCMS\\ModuleLoader\\ModuleContainer';
 		}
 
-		$moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
+		$moduleContainer = new $moduleContainerClass($moduleName, $modulePath, trim($namespace, '\\'));
 
 		if (!($moduleContainer instanceof ModuleContainerInterface))
 		{
@@ -187,7 +199,7 @@ class ModuleLoader
 		}
 
 		// Create a partial path of the filename
-		$path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $dir . DIRECTORY_SEPARATOR . $file . $ext);
+		$path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $dir . DIRECTORY_SEPARATOR . $file . $ext);
 
 		if (isset($this->files[$path . ($array ? '_array' : '_path')]))
 		{

@@ -40,7 +40,14 @@ retunrn [
 
 	...
 
-	'modules' => ['modulename', 'modulename1' => {path to module}]	
+	'modules' => [
+		'modulename', 
+		'modulename1' => {path to module},
+		'ModuleName2' => [
+			'path' => {custom path to module},
+			'namespace' => '\\CustomPath\\ModuleName2\\'
+		]
+	]	
 	
 	...
 
