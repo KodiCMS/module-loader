@@ -1,0 +1,25 @@
+{
+    "name": "kodicms/module-loader",
+    "license": "GNU GENERAL PUBLIC LICENSE",
+    "authors": [
+        {
+            "name": "Pavel Buchnev",
+            "email": "butschster@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "laravel/framework": "~5.0"
+    },
+    "autoload": {
+        "psr-4": {
+			"KodiCMS\\ModuleLoader\\"     : "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "5.0-dev"
+        }
+    },
+    "minimum-stability": "dev"
+}
