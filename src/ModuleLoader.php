@@ -64,7 +64,7 @@ class ModuleLoader
 			$appContainerClass = '\\KodiCMS\\ModuleLoader\\AppModuleContainer';
 		}
 
-		$this->addModule('App', base_path(), null, $appContainerClass);
+		$this->addModule('App', base_path(), '', $appContainerClass);
 	}
 
 	/**
