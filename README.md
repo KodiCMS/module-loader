@@ -4,6 +4,8 @@
 
 ## Установка
 
+`composer require 'kodicms/module-loader:5.0.*@dev'`
+
 ###Добавить в загрузку сервис провайдеры:
 <pre>
 /*
