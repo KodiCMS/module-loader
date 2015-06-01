@@ -1,4 +1,4 @@
-# KodiCMS module loader
+# Laravel module loader
 
 Пакет помогает организовать модульную структуру для фреймворка Laravel
 
