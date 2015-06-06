@@ -96,8 +96,10 @@ class ModuleLoader
 	{
 		if (is_null($namespace))
 		{
-			$namespace = '\\Modules\\';
+			$namespace = '\\Modules\\' . $moduleName;
 		}
+		
+		$namespace = trim($namespace, '\\');
 
 		if (is_null($moduleContainerClass))
 		{
@@ -112,7 +114,7 @@ class ModuleLoader
 				: '\\KodiCMS\\ModuleLoader\\ModuleContainer';
 		}
 
-		$moduleContainer = new $moduleContainerClass($moduleName, $modulePath, trim($namespace, '\\'));
+		$moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
 
 		if (!($moduleContainer instanceof ModuleContainerInterface))
 		{

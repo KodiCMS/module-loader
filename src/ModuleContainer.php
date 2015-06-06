@@ -70,7 +70,7 @@ class ModuleContainer implements ModuleContainerInterface
 	 */
 	public function getNamespace()
 	{
-		return $this->namespace . '\\' . $this->getName();
+		return $this->namespace;
 	}
 
 	/**
