@@ -41,8 +41,8 @@ class ModuleLoader
 
 			if (is_array($modulePath))
 			{
-				$modulePath = array_get($modulePath, 'path');
 				$moduleNamespace = array_get($modulePath, 'namespace');
+				$modulePath = array_get($modulePath, 'path');
 			}
 			else if (is_numeric($moduleName))
 			{
