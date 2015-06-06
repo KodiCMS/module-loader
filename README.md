@@ -1,8 +1,10 @@
-# KodiCMS module loader
+# Laravel module loader
 
 Пакет помогает организовать модульную структуру для фреймворка Laravel
 
 ## Установка
+
+`composer require 'kodicms/module-loader:5.0.*@dev'`
 
 ###Добавить в загрузку сервис провайдеры:
 <pre>
