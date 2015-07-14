@@ -40,20 +40,15 @@ KodiCMS\ModulesLoader\Providers\ConfigServiceProvider::class,
 ### Конфиг файл `app.php` 
 <pre>
 return [
-
 	...
-
-	'modules' => [
-		'modulename', 
-		'modulename1' => {path to module},
-		'ModuleName2' => [
-			'path' => {custom path to module},
-			'namespace' => '\\CustomPath\\ModuleName2\\'
-		]
-	]	
-	
-	...
-
+    'modules' => [
+    	'modulename', // Namespace: KodiCMS\modulename, Path baseDir/modules/modulename
+    	'ModuleName2' => [
+    		'path' => {relative path to module},
+    		'namespace' => '\\CustomNamespace\\ModuleName2\\'
+    	]
+    ]
+    ...
 ];
 </pre>
 
@@ -76,46 +71,13 @@ class ModuleContainer extends BaseModuleContainer
 По умолчанию загрузчик при подключении модуля использует `KodiCMS\ModulesLoader\ModuleContainer`, вы можете переопределить файл контейнера создав его по пути `app\ModuleContainer.php` или если вы захотите изменить поведение конкретного модуля, то необходимо создать файл в корне директории модуля `ModuleContainer.php` и наследовать его от `KodiCMS\ModulesLoader\ModuleContainer`
 
 ## Структура модуля
+https://github.com/KodiCMS/kodicms-laravel/wiki/%D0%9C%D0%BE%D0%B4%D1%83%D0%BB%D0%B8
 
-Структура модуля аналогична структуре той, что в папке `app/`
 
- * `config` - конфиги приложения, могут быть перезаписаны из папки `/config/`
- * `Console`
-  * `Commands` - расположение файлов консольных компанды
- * `database`
- * `Http`
-  * `Controllers` - контроллеры модуля
-  * `Middleware`
-  * `routes.php` - роуты текущего модуля, оборачиваются в неймспейс (По умолчанию: `Modules\{module}`)
- * `Observers` - Наблюдатели для моделей Eloquent
- * `Providers`
-  * `ModuleServiceProvider.php` - Сервис провайдер, если есть, будет запущен в момент инициализации приложения
- * `resources`
-  * `lang` - Файлы переводов для модуля, доступны по ключу названия модуля приведенного в нижний регистр `trans('{module}::file.key')`
-  * `views` - Шаблоны модуля, доступны по ключу названия модуля приведенного в нижний регистр `view('{module}::template')`
- * `Services` - Сервисные контейнеры
- * `ModuleContainer.php` - Если данный файл существует, то он будет подключен как системный файл модуля, в котором указаны относительыне пути и действия в момент инициализации. Необходимо наследовать от `KodiCMS\ModuleLoader\ModuleContainer`
+----------
 
-### Основные методы
+Для просмотра списка подключенных модулей в системе используйте консольную команду:
 
- * `addModule($modulename. $modulepath = null, , $namespace = null)` - добавление модуля в загрузчик
- * `getRegisteredModules()` - получение списка объектов модулей
-	<pre>
-	ModuleLoader::getRegisteredModules()
+`php artisan modules:list`
 
-	// return
-	[
-		ModuleContainerInterface $module,
-		...
-		ModuleContainerInterface $moduleX
-	]
-	</pre>
-
-### Основные методы модуля
-
- * `getName()` - получение названия модуля
- * `getNamespace()` - получение неймспейса
- * `getPath($subpath = NULL)` - получение абсолютного пути до модуля или пути до переданного пути относительно модуля
- * `getLocalePath()` - путь до языковых файлов
- * `getViewsPath()` - путь до шаблонов
- * `getConfigPath()` - путь до конфигов
+![](https://dl.dropboxusercontent.com/u/1110641/kodicms-wiki/modulesList.png)
