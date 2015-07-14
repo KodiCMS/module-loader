@@ -1,6 +1,6 @@
 <?php namespace KodiCMS\ModulesLoader;
 
-Illuminate\Foundation\Application;
+use Illuminate\Foundation\Application;
 use KodiCMS\ModulesLoader\Contracts\ModuleContainerInterface;
 
 class ModulesLoader
