@@ -1,4 +1,4 @@
-<?php namespace KodiCMS\ModuleLoader;
+<?php namespace KodiCMS\ModulesLoader;
 
 class AppModuleContainer extends ModuleContainer
 {
@@ -8,20 +8,33 @@ class AppModuleContainer extends ModuleContainer
 	protected $namespace = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $isPublishable = false;
+
+	/**
+	 * @param \Illuminate\Foundation\Application $app
 	 * @return $this
 	 */
-	public function boot()
+	public function boot($app)
 	{
-		$this->isBooted = true;
+		if (!$this->isBooted)
+		{
+			$this->loadAssets();
+			$this->isBooted = true;
+		}
+
 		return $this;
 	}
 
 	/**
+	 * @param \Illuminate\Foundation\Application $app
 	 * @return $this
 	 */
-	public function register()
+	public function register($app)
 	{
 		$this->isRegistered = true;
+
 		return $this;
 	}
 

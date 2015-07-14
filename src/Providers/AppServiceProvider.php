@@ -1,23 +1,10 @@
-<?php namespace KodiCMS\ModuleLoader\Providers;
+<?php namespace KodiCMS\ModulesLoader\Providers;
 
+use Event;
 use ModuleLoader;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {
-
-	/**
-	 * Bootstrap any application services.
-	 *
-	 * @return void
-	 */
-	public function boot()
-	{
-		ModuleLoader::bootModules();
-
-		ModuleLoader::shutdown(function () {
-			ModuleLoader::cacheFoundFiles();
-		});
-	}
 
 	/**
 	 * Register any application services.
@@ -30,7 +17,22 @@ class AppServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		ModuleLoader::registerModules();
+		ModulesLoader::registerModules($this->app);
 	}
 
+	/**
+	 * Bootstrap any application services.
+	 *
+	 * @return void
+	 */
+	public function boot()
+	{
+		ModulesLoader::bootModules($this->app);
+		ModulesFileSystem::getFoundFilesFromCache();
+
+		Event::listen('app.shutdown', function()
+		{
+			ModulesFileSystem::cacheFoundFiles();
+		});
+	}
 }

@@ -1,23 +1,23 @@
-<?php namespace KodiCMS\ModuleLoader\Providers;
+<?php namespace KodiCMS\ModulesLoader\Providers;
 
-use ModuleLoader;
-use Illuminate\Support\ServiceProvider;
+use Event;
+use Config;
+use ModulesLoader;
 
 class ConfigServiceProvider extends ServiceProvider {
 
 	public function boot()
 	{
-		/**
-		 * Загрузка конфигов модулей
-		 */
-		foreach (ModuleLoader::getRegisteredModules() as $module)
+		foreach (ModulesLoader::getRegisteredModules() as $module)
 		{
 			$config = $module->loadConfig();
 			foreach($config as $group => $data)
 			{
-				app('config')->set($group, $data);
+				Config::set($group, $data);
 			}
 		}
+
+		Event::fire('config.loaded');
 	}
 
 	public function register(){}

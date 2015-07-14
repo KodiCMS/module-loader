@@ -11,16 +11,17 @@
 /*
  * KodiCMS Service Providers...
  */
-'KodiCMS\ModuleLoader\Providers\ModuleServiceProvider',
-'KodiCMS\ModuleLoader\Providers\RouteServiceProvider',
-'KodiCMS\ModuleLoader\Providers\AppServiceProvider',
-'KodiCMS\ModuleLoader\Providers\ConfigServiceProvider',
+KodiCMS\ModulesLoader\Providers\ModuleServiceProvider::class,
+KodiCMS\ModulesLoader\Providers\RouteServiceProvider::class,
+KodiCMS\ModulesLoader\Providers\AppServiceProvider::class,
+KodiCMS\ModulesLoader\Providers\ConfigServiceProvider::class,
 </pre>
 
 ### Добавить фасад в алиасы
 
 <pre>
-'ModuleLoader' => 'KodiCMS\ModuleLoader\ModuleLoaderFacade',
+'ModuleLoader'      => KodiCMS\ModulesLoader\ModulesLoaderFacade::class,
+'ModulesFileSystem' => KodiCMS\ModulesLoader\ModulesFileSystemFacade::class,
 </pre>
 
 
@@ -38,7 +39,7 @@
 
 ### Конфиг файл `app.php` 
 <pre>
-retunrn [
+return [
 
 	...
 
@@ -61,7 +62,7 @@ retunrn [
 По умолчанию модули системы хранятся в папке `modules`, если вам необходимо загрузить модуль из другой директории, то вы должны указать через конфиг файл путь до модуля и создать в папке модуля файл `ModuleContainer.php` и указать в нем пространство имен для данного модуля:
 
 <pre>
-use KodiCMS\ModuleLoader\ModuleContainer as BaseModuleContainer;
+use KodiCMS\ModulesLoader\ModuleContainer as BaseModuleContainer;
 
 class ModuleContainer extends BaseModuleContainer
 {
@@ -72,7 +73,7 @@ class ModuleContainer extends BaseModuleContainer
 
 </pre>
 
-По умолчанию загрузчик при подключении модуля использует `KodiCMS\ModuleLoader\ModuleContainer`, вы можете переопределить файл контейнера создав его по пути `app\ModuleLoader\ModuleContainer.php` или если вы захотите изменить поведение конкретного модуля, то необходимо создать файл в корне директории модуля `ModuleContainer.php` и наследовать его от `KodiCMS\ModuleLoader\ModuleContainer`
+По умолчанию загрузчик при подключении модуля использует `KodiCMS\ModulesLoader\ModuleContainer`, вы можете переопределить файл контейнера создав его по пути `app\ModuleContainer.php` или если вы захотите изменить поведение конкретного модуля, то необходимо создать файл в корне директории модуля `ModuleContainer.php` и наследовать его от `KodiCMS\ModulesLoader\ModuleContainer`
 
 ## Структура модуля
 
@@ -108,33 +109,6 @@ class ModuleContainer extends BaseModuleContainer
 		...
 		ModuleContainerInterface $moduleX
 	]
-	</pre>
- * `getPaths($subpath = null)` - получение массива путей относительно каждого модуля. Пригодится если вам необходимо получить спиcок всех модулей у которых есть директория `/modulename/resources` метод выведет
-	<pre>
-	ModuleLoader::getPaths('resources')
-
-	// return
-	[
-		'modulename' => '{dir}/modulename/resources',
-		...
-	]
-	</pre>
- * `findFile($dir, $file, $ext = null, $array = false)` - поиск определенного файла либо во всех модулях. Возвращает (путь|список путей) найденых файлов. Поиск файлов кешируется на 10 минут.
-	<pre>
-	ModuleLoader::findFile('resources/js', 'PagesController', 'js')
-
-	// return
-	{dir}/Pages/resources/js/PagesController.js
-
-	ModuleLoader::findFile('resources', 'packages', 'php', true)
-
-	//return
-	[
-		{dir}/CMS/resources/packages.php,
-		{dir}/Cron/resources/packages.php,
-		{dir}/Widgets/resources/packages.php
-	]
-
 	</pre>
 
 ### Основные методы модуля

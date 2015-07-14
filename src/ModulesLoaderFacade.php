@@ -2,10 +2,7 @@
 
 use Illuminate\Support\Facades\Facade;
 
-/**
- * @see \KodiCMS\CMS\Loader\ModuleLoader
- */
-class ModuleLoaderFacade extends Facade {
+class ModulesLoaderFacade extends Facade {
 
 	/**
 	 * Get the registered name of the component.
@@ -14,7 +11,7 @@ class ModuleLoaderFacade extends Facade {
 	 */
 	protected static function getFacadeAccessor()
 	{
-		return 'module.loader';
+		return 'modules.loader';
 	}
 
 }

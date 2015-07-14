@@ -1,21 +1,28 @@
-<?php namespace KodiCMS\ModuleLoader\Providers;
+<?php namespace KodiCMS\ModulesLoader\Providers;
 
-use ModuleLoader;
+use ModulesLoader;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseRouteServiceProvider;
 
 class RouteServiceProvider extends BaseRouteServiceProvider
 {
 	/**
-	 * Define your route model bindings, pattern filters, etc.
+	 * This namespace is applied to the controller routes in your routes file.
 	 *
-	 * @param  \Illuminate\Routing\Router $router
+	 * In addition, it is set as the URL generator's root namespace.
+	 *
+	 * @var string
+	 */
+	protected $namespace = 'App\Http\Controllers';
+
+	/**
+	 * Load the cached routes for the application.
+	 *
 	 * @return void
 	 */
-	public function boot(Router $router)
+	protected function loadCachedRoutes()
 	{
-		parent::boot($router);
-
+		require $this->app->getCachedRoutesPath();
 	}
 
 	/**
@@ -26,7 +33,7 @@ class RouteServiceProvider extends BaseRouteServiceProvider
 	 */
 	public function map(Router $router)
 	{
-		foreach (ModuleLoader::getRegisteredModules() as $module)
+		foreach (ModulesLoader::getRegisteredModules() as $module)
 		{
 			$this->app->call([$module, 'loadRoutes'], [$router]);
 		}

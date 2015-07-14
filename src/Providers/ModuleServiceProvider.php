@@ -1,26 +1,12 @@
-<?php namespace KodiCMS\ModuleLoader\Providers;
+<?php namespace KodiCMS\ModulesLoader\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use KodiCMS\ModuleLoader\ModuleLoader;
+use KodiCMS\ModulesLoader\ModulesLoader;
+use KodiCMS\ModulesLoader\ModulesFileSystem;
+use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
 
 class ModuleServiceProvider extends ServiceProvider
 {
-	public function __construct($app)
-	{
-		parent::__construct($app);
-
-		$this->app->singleton('module.loader', function ($app) {
-			return new ModuleLoader(config('app.modules'));
-		});
-	}
-
-	/**
-	 * Bootstrap any application services.
-	 *
-	 * @return void
-	 */
-	public function boot(){}
-
 	/**
 	 * Register any application services.
 	 *
@@ -30,5 +16,35 @@ class ModuleServiceProvider extends ServiceProvider
 	 *
 	 * @return void
 	 */
-	public function register(){}
+	public function register()
+	{
+		$this->app->singleton('modules.loader', function ()
+		{
+			return new ModulesLoader(config('app.modules'));
+		});
+
+		$this->app->singleton('modules.filesystem', function ($app)
+		{
+			return new ModulesFileSystem($app['modules.loader'], $app['files']);
+		});
+
+		$this->registerConsoleCommand('modules:list', ModulesList::class);
+	}
+
+	/**
+	 * Registers a new console (artisan) command
+	 * @param $key The command name
+	 * @param $class The command class
+	 * @return void
+	 */
+	public function registerConsoleCommand($key, $class)
+	{
+		$key = 'command.' . $key;
+		$this->app[$key] = $this->app->share(function ($app) use ($class)
+		{
+			return $app->make($class);
+		});
+
+		$this->commands($key);
+	}
 }

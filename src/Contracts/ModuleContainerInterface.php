@@ -1,4 +1,4 @@
-<?php namespace KodiCMS\ModuleLoader\Contracts;
+<?php namespace KodiCMS\ModulesLoader\Contracts;
 
 use Illuminate\Routing\Router;
 
@@ -50,6 +50,11 @@ interface ModuleContainerInterface
 	/**
 	 * @return string
 	 */
+	public function getAssetsPackagesPath();
+
+	/**
+	 * @return string
+	 */
 	public function getRoutesPath();
 
 	/**
@@ -74,13 +79,14 @@ interface ModuleContainerInterface
 	 */
 	public function loadRoutes(Router $router);
 
-	/**
-	 * @return $this
-	 */
-	public function boot();
-
-	/**
-	 * @return $this
-	 */
-	public function register();
+//
+//	/**
+//	 * @return $this
+//	 */
+//	public function boot();
+//
+//	/**
+//	 * @return $this
+//	 */
+//	public function register();
 }
