@@ -39,7 +39,7 @@ class ModulesLoader
 
 			if (is_null($modulePath))
 			{
-				$modulePath = base_path('modules/' . $moduleName);
+				$modulePath = base_path('modules' . DIRECTORY_SEPARATOR . $moduleName);
 			}
 
 			$this->addModule($moduleName, $modulePath, $moduleNamespace);
