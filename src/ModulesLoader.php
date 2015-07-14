@@ -149,7 +149,7 @@ class ModulesLoader
 
 	public function shutdownHandler()
 	{
-		$this['events']->fire('app.shutdown');
+		app('events')->fire('app.shutdown');
 
 		foreach($this->shutdownCallbacks as $callback)
 		{
