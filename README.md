@@ -20,7 +20,7 @@ KodiCMS\ModulesLoader\Providers\ConfigServiceProvider::class,
 ### Добавить фасад в алиасы
 
 <pre>
-'ModuleLoader'      => KodiCMS\ModulesLoader\ModulesLoaderFacade::class,
+'ModulesLoader'     => KodiCMS\ModulesLoader\ModulesLoaderFacade::class,
 'ModulesFileSystem' => KodiCMS\ModulesLoader\ModulesFileSystemFacade::class,
 </pre>
 

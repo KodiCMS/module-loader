@@ -1,4 +1,4 @@
-<?php namespace KodiCMS\ModuleLoader;
+<?php namespace KodiCMS\ModulesLoader;
 
 use Illuminate\Support\Facades\Facade;
 

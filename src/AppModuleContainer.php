@@ -20,7 +20,6 @@ class AppModuleContainer extends ModuleContainer
 	{
 		if (!$this->isBooted)
 		{
-			$this->loadAssets();
 			$this->isBooted = true;
 		}
 

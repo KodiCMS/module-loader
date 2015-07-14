@@ -170,7 +170,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 		{
 			$this->loadViews();
 			$this->loadTranslations();
-			$this->loadAssets();
 			$this->isBooted = true;
 		}
 
@@ -267,7 +266,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 			'viewsPath' => $this->getViewsPath(),
 			'configPath' => $this->getConfigPath(),
 			'routesPath' => $this->getRoutesPath(),
-			'assetsPath' => $this->getAssetsPackagesPath(),
 			'namespace' => $this->getNamespace(),
 			'name' => $this->getName(),
 		];

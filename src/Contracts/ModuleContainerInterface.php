@@ -50,11 +50,6 @@ interface ModuleContainerInterface
 	/**
 	 * @return string
 	 */
-	public function getAssetsPackagesPath();
-
-	/**
-	 * @return string
-	 */
 	public function getRoutesPath();
 
 	/**

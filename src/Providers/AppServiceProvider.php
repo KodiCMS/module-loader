@@ -1,7 +1,8 @@
 <?php namespace KodiCMS\ModulesLoader\Providers;
 
 use Event;
-use ModuleLoader;
+use ModulesLoader;
+use ModulesFileSystem;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider {

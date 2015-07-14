@@ -3,6 +3,7 @@
 use Event;
 use Config;
 use ModulesLoader;
+use Illuminate\Support\ServiceProvider;
 
 class ConfigServiceProvider extends ServiceProvider {
 

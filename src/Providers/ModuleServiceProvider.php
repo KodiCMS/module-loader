@@ -20,7 +20,7 @@ class ModuleServiceProvider extends ServiceProvider
 	{
 		$this->app->singleton('modules.loader', function ()
 		{
-			return new ModulesLoader(config('app.modules'));
+			return new ModulesLoader(config('app.modules', []));
 		});
 
 		$this->app->singleton('modules.filesystem', function ($app)
