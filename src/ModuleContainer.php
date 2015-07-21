@@ -87,6 +87,14 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 	/**
 	 * @return string
 	 */
+	public function getKey()
+	{
+		return strtolower($this->getName());
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getNamespace()
 	{
 		return $this->namespace;
@@ -189,7 +197,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 			$serviceProviderPath = $this->getServiceProviderPath();
 			if (is_file($serviceProviderPath))
 			{
-				App::register($this->getNamespace() . '\Providers\ModuleServiceProvider');
+				$app->register($this->getNamespace() . '\Providers\ModuleServiceProvider');
 			}
 
 			$this->isRegistered = true;
@@ -304,14 +312,12 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 	 */
 	protected function loadViews()
 	{
-		$namespace = strtolower($this->getName());
-
 		if (is_dir($appPath = $this->publishViewPath()))
 		{
-			view()->addNamespace($namespace, $appPath);
+			view()->addNamespace($this->getKey(), $appPath);
 		}
 
-		view()->addNamespace($namespace, $this->getViewsPath());
+		view()->addNamespace($this->getKey(), $this->getViewsPath());
 	}
 
 	/**
@@ -329,8 +335,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 	 */
 	protected function loadTranslations()
 	{
-		$namespace = strtolower($this->getName());
-		app('translator')->addNamespace($namespace, $this->getLocalePath());
+		app('translator')->addNamespace($this->getKey(), $this->getLocalePath());
 	}
 
 	/**
