@@ -1,5 +1,6 @@
 <?php namespace KodiCMS\ModulesLoader\Providers;
 
+use Event;
 use ModulesLoader;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseRouteServiceProvider;
