@@ -196,6 +196,13 @@ class ModulesFileSystem
 	 */
 	public function getModuleNameByNamespace($namespace = null)
 	{
+		$defaultNamespace = 'app';
+
+		if (app()->runningInConsole())
+		{
+			return $defaultNamespace;
+		}
+
 		if (is_null($namespace))
 		{
 			$namespace = app('router')->getCurrentRoute()->getAction()['namespace'];
@@ -212,7 +219,7 @@ class ModulesFileSystem
 			}
 		}
 
-		return 'app';
+		return $defaultNamespace;
 	}
 
 	public function getFoundFilesFromCache()
