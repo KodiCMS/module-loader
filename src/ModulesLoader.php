@@ -45,7 +45,7 @@ class ModulesLoader
 			$this->addModule($moduleName, $modulePath, $moduleNamespace);
 		}
 
-		$this->addModule('App', base_path(), '');
+		$this->addModule('App', base_path(), '', \KodiCMS\ModulesLoader\AppModuleContainer::class);
 	}
 
 	/**
@@ -82,12 +82,19 @@ class ModulesLoader
 
 		$namespace = trim($namespace, '\\');
 
-		if (is_null($moduleContainerClass))
+		$defaultModuleClass = '\\App\\DefaultModuleContainer';
+
+		$customModuleClass = "\\$namespace\\ModuleContainer";
+
+		if ($moduleName == 'App')
 		{
-			$moduleContainerClass = '\\' . $namespace . '\\ModuleContainer';
+			$customModuleClass = "\\App\\ModuleContainer";
 		}
 
-		$defaultModuleClass = '\\App\\ModuleContainer';
+		if (is_null($moduleContainerClass) or class_exists($customModuleClass))
+		{
+			$moduleContainerClass = $customModuleClass;
+		}
 
 		if (!class_exists($moduleContainerClass))
 		{
