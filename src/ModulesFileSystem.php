@@ -198,14 +198,14 @@ class ModulesFileSystem
 	{
 		$defaultNamespace = 'app';
 
-		if (app()->runningInConsole())
+		if (app()->runningInConsole() or is_null($currentRoute = app('router')->getCurrentRoute()))
 		{
 			return $defaultNamespace;
 		}
 
 		if (is_null($namespace))
 		{
-			$namespace = app('router')->getCurrentRoute()->getAction()['namespace'];
+			$namespace = $currentRoute->getAction()['namespace'];
 		}
 
 		foreach ($this->moduleLoader->getRegisteredModules() as $module)
