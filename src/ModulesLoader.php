@@ -1,166 +1,168 @@
-<?php namespace KodiCMS\ModulesLoader;
+<?php
+namespace KodiCMS\ModulesLoader;
 
 use Illuminate\Foundation\Application;
 use KodiCMS\ModulesLoader\Contracts\ModuleContainerInterface;
 
 class ModulesLoader
 {
-	/**
-	 * @var array
-	 */
-	protected $registeredModules = [];
 
-	/**
-	 * @var array
-	 */
-	protected $shutdownCallbacks = [];
+    /**
+     * @var array
+     */
+    protected $registeredModules = [ ];
 
-	/**
-	 * @param array $modulesList
-	 */
-	public function __construct(array $modulesList)
-	{
-		register_shutdown_function([$this, 'shutdownHandler']);
+    /**
+     * @var array
+     */
+    protected $shutdownCallbacks = [ ];
 
-		foreach ($modulesList as $moduleName => $modulePath)
-		{
-			$moduleNamespace = null;
 
-			if (is_array($modulePath))
-			{
-				$moduleNamespace = array_get($modulePath, 'namespace');
-				$modulePath = array_get($modulePath, 'path');
-			}
-			else if (is_numeric($moduleName))
-			{
-				$moduleName = $modulePath;
-				$modulePath = null;
-			}
+    /**
+     * @param array $modulesList
+     */
+    public function __construct(array $modulesList)
+    {
+        register_shutdown_function([ $this, 'shutdownHandler' ]);
 
-			if (is_null($modulePath))
-			{
-				$modulePath = base_path('modules' . DIRECTORY_SEPARATOR . $moduleName);
-			}
+        foreach ($modulesList as $moduleName => $modulePath) {
+            $moduleNamespace = null;
 
-			$this->addModule($moduleName, $modulePath, $moduleNamespace);
-		}
+            if (is_array($modulePath)) {
+                $moduleNamespace = array_get($modulePath, 'namespace');
+                $modulePath      = array_get($modulePath, 'path');
+            } else {
+                if (is_numeric($moduleName)) {
+                    $moduleName = $modulePath;
+                    $modulePath = null;
+                }
+            }
 
-		$this->addModule('App', base_path(), '', \KodiCMS\ModulesLoader\AppModuleContainer::class);
-	}
+            if (is_null($modulePath)) {
+                $modulePath = base_path('modules' . DIRECTORY_SEPARATOR . $moduleName);
+            }
 
-	/**
-	 * @return array
-	 */
-	public function getRegisteredModules()
-	{
-		return $this->registeredModules;
-	}
+            $this->addModule($moduleName, $modulePath, $moduleNamespace);
+        }
 
-	/**
-	 * @param string $moduleName
-	 *
-	 * @return ModuleContainerInterface|null
-	 */
-	public function getRegisteredModule($moduleName)
-	{
-		return array_get($this->getRegisteredModules(), $moduleName);
-	}
+        $this->addModule('App', base_path(), '', \KodiCMS\ModulesLoader\AppModuleContainer::class);
+    }
 
-	/**
-	 * @param string $moduleName
-	 * @param string|null $modulePath
-	 * @param string|null $namespace
-	 * @param string|null $moduleContainerClass
-	 * @return $this
-	 */
-	public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null)
-	{
-		if (is_null($namespace))
-		{
-			$namespace = 'Modules\\' . $moduleName;
-		}
 
-		$namespace = trim($namespace, '\\');
+    /**
+     * @return array
+     */
+    public function getRegisteredModules()
+    {
+        return $this->registeredModules;
+    }
 
-		$defaultModuleClass = '\\App\\DefaultModuleContainer';
 
-		$customModuleClass = "\\$namespace\\ModuleContainer";
+    /**
+     * @param string $moduleName
+     *
+     * @return ModuleContainerInterface|null
+     */
+    public function getRegisteredModule($moduleName)
+    {
+        return array_get($this->getRegisteredModules(), $moduleName);
+    }
 
-		if ($moduleName == 'App')
-		{
-			$customModuleClass = "\\App\\ModuleContainer";
-		}
 
-		if (is_null($moduleContainerClass) or class_exists($customModuleClass))
-		{
-			$moduleContainerClass = $customModuleClass;
-		}
+    /**
+     * @param string      $moduleName
+     * @param string|null $modulePath
+     * @param string|null $namespace
+     * @param string|null $moduleContainerClass
+     *
+     * @return $this
+     */
+    public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null)
+    {
+        if (is_null($namespace)) {
+            $namespace = 'Modules\\' . $moduleName;
+        }
 
-		if (!class_exists($moduleContainerClass))
-		{
-			$moduleContainerClass = class_exists($defaultModuleClass)
-				? $defaultModuleClass
-				: \KodiCMS\ModulesLoader\ModuleContainer::class;
-		}
+        $namespace = trim($namespace, '\\');
 
-		$moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
+        $defaultModuleClass = '\\App\\DefaultModuleContainer';
 
-		$this->registerModule($moduleContainer);
+        $customModuleClass = "\\$namespace\\ModuleContainer";
 
-		return $this;
-	}
+        if ($moduleName == 'App') {
+            $customModuleClass = "\\App\\ModuleContainer";
+        }
 
-	/**
-	 * @param ModuleContainerInterface $module
-	 */
-	public function registerModule(ModuleContainerInterface $module)
-	{
-		$this->registeredModules[$module->getName()] = $module;
-	}
+        if (is_null($moduleContainerClass) or class_exists($customModuleClass)) {
+            $moduleContainerClass = $customModuleClass;
+        }
 
-	/**
-	 * @param Application $app
-	 * @return $this
-	 */
-	public function registerModules(Application $app)
-	{
-		foreach ($this->getRegisteredModules() as $module)
-		{
-			$module->register($app);
-		}
+        if ( ! class_exists($moduleContainerClass)) {
+            $moduleContainerClass = class_exists($defaultModuleClass) ? $defaultModuleClass : \KodiCMS\ModulesLoader\ModuleContainer::class;
+        }
 
-		return $this;
-	}
+        $moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
 
-	/**
-	 * @param Application $app
-	 * @return $this
-	 */
-	public function bootModules(Application $app)
-	{
-		foreach ($this->getRegisteredModules() as $module)
-		{
-			$module->boot($app);
-		}
+        $this->registerModule($moduleContainer);
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param Closure $callback
-	 */
-	public function shutdown(Closure $callback)
-	{
-		$this->shutdownCallbacks[] = $callback;
-	}
 
-	public function shutdownHandler()
-	{
-		app('events')->fire('app.shutdown');
+    /**
+     * @param ModuleContainerInterface $module
+     */
+    public function registerModule(ModuleContainerInterface $module)
+    {
+        $this->registeredModules[$module->getName()] = $module;
+    }
 
-		foreach($this->shutdownCallbacks as $callback)
-		{
-			$this->call($callback);
-		}
-	}
+
+    /**
+     * @param Application $app
+     *
+     * @return $this
+     */
+    public function registerModules(Application $app)
+    {
+        foreach ($this->getRegisteredModules() as $module) {
+            $module->register($app);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param Application $app
+     *
+     * @return $this
+     */
+    public function bootModules(Application $app)
+    {
+        foreach ($this->getRegisteredModules() as $module) {
+            $module->boot($app);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @param Closure $callback
+     */
+    public function shutdown(Closure $callback)
+    {
+        $this->shutdownCallbacks[] = $callback;
+    }
+
+
+    public function shutdownHandler()
+    {
+        app('events')->fire('app.shutdown');
+
+        foreach ($this->shutdownCallbacks as $callback) {
+            $this->call($callback);
+        }
+    }
 }

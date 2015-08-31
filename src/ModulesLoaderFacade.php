@@ -1,17 +1,19 @@
-<?php namespace KodiCMS\ModulesLoader;
+<?php
+namespace KodiCMS\ModulesLoader;
 
 use Illuminate\Support\Facades\Facade;
 
-class ModulesLoaderFacade extends Facade {
+class ModulesLoaderFacade extends Facade
+{
 
-	/**
-	 * Get the registered name of the component.
-	 *
-	 * @return string
-	 */
-	protected static function getFacadeAccessor()
-	{
-		return 'modules.loader';
-	}
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'modules.loader';
+    }
 
 }

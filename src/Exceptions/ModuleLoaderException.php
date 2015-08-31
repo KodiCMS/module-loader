@@ -1,3 +1,7 @@
-<?php namespace KodiCMS\ModulesLoader\Exceptions;
+<?php
+namespace KodiCMS\ModulesLoader\Exceptions;
 
-class ModuleLoaderException extends \RuntimeException {}
+class ModuleLoaderException extends \RuntimeException
+{
+
+}
