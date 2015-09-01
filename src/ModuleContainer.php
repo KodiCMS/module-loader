@@ -249,7 +249,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
                     continue;
                 }
                 $key           = $file->getBasename('.php');
-                $configs[$key] = array_merge(require $file->getPathname(), app('config')->get($key, [ ]));
+                $configs[$key] = array_merge_recursive(require $file->getPathname(), app('config')->get($key, [ ]));
             }
 
             return $configs;
