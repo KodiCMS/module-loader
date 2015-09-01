@@ -4,7 +4,7 @@
 
 ## Установка
 
-`composer require 'kodicms/module-loader'`
+`composer require kodicms/module-loader`
 https://packagist.org/packages/kodicms/module-loader
 
 ###Добавить в загрузку сервис провайдеры
