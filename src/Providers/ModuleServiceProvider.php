@@ -5,6 +5,8 @@ use Illuminate\Support\ServiceProvider;
 use KodiCMS\ModulesLoader\ModulesLoader;
 use KodiCMS\ModulesLoader\ModulesFileSystem;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
+use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
+use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -21,7 +23,7 @@ class ModuleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('modules.loader', function () {
-            return new ModulesLoader(config('app.modules', [ ]));
+            return new ModulesLoader(config('app.modules', []));
         });
 
         $this->app->singleton('modules.filesystem', function ($app) {
@@ -29,6 +31,8 @@ class ModuleServiceProvider extends ServiceProvider
         });
 
         $this->registerConsoleCommand('modules:list', ModulesList::class);
+        $this->registerConsoleCommand('modules:migrate', ModulesMigrateCommand::class);
+        $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
     }
 
 

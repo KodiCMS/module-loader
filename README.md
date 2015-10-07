@@ -66,4 +66,10 @@ https://github.com/KodiCMS/kodicms-laravel/wiki/%D0%9C%D0%BE%D0%B4%D1%83%D0%BB%D
 Для просмотра списка подключенных модулей в системе используйте консольную команду:  
 `php artisan modules:list`
 
+Для выполнения миграций из модулей используте консольную команду:
+`php artisan modules:migrate` (Доступны параметры аналогичные для стандартной команды `migrate`)
+
+Для сидирования данных из модулей используте консольную команду:
+`php artisan modules:seed`
+
 ![](https://dl.dropboxusercontent.com/u/1110641/kodicms-wiki/modulesList.png)
