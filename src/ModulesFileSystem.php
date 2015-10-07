@@ -21,7 +21,7 @@ class ModulesFileSystem
     /**
      * @var  array   File path cache, used when caching is true
      */
-    protected $files = [ ];
+    protected $files = [];
 
     /**
      * @var bool
@@ -47,7 +47,7 @@ class ModulesFileSystem
      */
     public function getPaths($sub = null)
     {
-        $paths = [ ];
+        $paths = [];
 
         foreach ($this->moduleLoader->getRegisteredModules() as $module) {
             if (is_dir($dir = $module->getPath($sub))) {
@@ -92,7 +92,7 @@ class ModulesFileSystem
 
         if ($array) {
             // Array of files that have been found
-            $found = [ ];
+            $found = [];
 
             foreach ($this->moduleLoader->getRegisteredModules() as $module) {
                 $dir = $module->getPath() . DIRECTORY_SEPARATOR;
@@ -150,7 +150,7 @@ class ModulesFileSystem
         $paths = $this->getPaths();
 
         // Create an array for the files
-        $found = [ ];
+        $found = [];
 
         foreach ($paths as $moduleName => $path) {
             if (is_dir($path = normalize_path($path . DIRECTORY_SEPARATOR . $directory))) {
@@ -186,13 +186,14 @@ class ModulesFileSystem
     public function getModuleNameByNamespace($namespace = null)
     {
         $defaultNamespace = 'app';
+        $currentRoute     = app('router')->getCurrentRoute();
 
-        if (app()->runningInConsole() or is_null($currentRoute = app('router')->getCurrentRoute())) {
-            return $defaultNamespace;
+        if (is_null($namespace) and ! is_null($currentRoute)) {
+            $namespace = $currentRoute->getAction()['namespace'];
         }
 
         if (is_null($namespace)) {
-            $namespace = $currentRoute->getAction()['namespace'];
+            return $defaultNamespace;
         }
 
         foreach ($this->moduleLoader->getRegisteredModules() as $module) {
@@ -209,7 +210,7 @@ class ModulesFileSystem
 
     public function getFoundFilesFromCache()
     {
-        $this->files = Cache::get('ModulesFileSystem::findFile', [ ]);
+        $this->files = Cache::get('ModulesFileSystem::findFile', []);
     }
 
 
