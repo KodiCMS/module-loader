@@ -9,6 +9,12 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseRouteSer
 class RouteServiceProvider extends BaseRouteServiceProvider
 {
 
+    public function register()
+    {
+        $this->loadRoutes();
+        //$this->app->call([$this, 'map']);
+    }
+
     /**
      * This namespace is applied to the controller routes in your routes file.
      *

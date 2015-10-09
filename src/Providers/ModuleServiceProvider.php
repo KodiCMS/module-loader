@@ -1,7 +1,9 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
+use App;
 use Illuminate\Support\ServiceProvider;
+use \Illuminate\Foundation\AliasLoader;
 use KodiCMS\ModulesLoader\ModulesLoader;
 use KodiCMS\ModulesLoader\ModulesFileSystem;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
@@ -10,6 +12,15 @@ use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
 
 class ModuleServiceProvider extends ServiceProvider
 {
+
+    /**
+     * Providers to register
+     */
+    protected $providers = [
+        'KodiCMS\ModulesLoader\Providers\RouteServiceProvider',
+        'KodiCMS\ModulesLoader\Providers\AppServiceProvider',
+        'KodiCMS\ModulesLoader\Providers\ConfigServiceProvider',
+    ];
 
     /**
      * Register any application services.
@@ -35,6 +46,28 @@ class ModuleServiceProvider extends ServiceProvider
         $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
     }
 
+
+    public function boot()
+    {
+        $loader = AliasLoader::getInstance();
+
+        $loader->alias('ModulesLoader', 'KodiCMS\ModulesLoader\ModulesLoaderFacade');
+        $loader->alias('ModulesFileSystem', 'KodiCMS\ModulesLoader\ModulesFileSystemFacade');
+
+        $this->registerProviders();
+    }
+
+    /**
+     * Register providers
+     */
+    protected function registerProviders()
+    {
+        foreach ($this->providers as $providerClass)
+        {
+            $provider = app($providerClass, [app()]);
+            $provider->register();
+        }
+    }
 
     /**
      * Registers a new console (artisan) command
