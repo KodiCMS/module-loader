@@ -27,7 +27,10 @@ class ModulesMigrateCommand extends Command
             return;
         }
 
-        $this->output->writeln('<info>Migrating KodiCMS modules...</info>');
+        $this->output->writeln('<info>Run application migrations ...</info>');
+        $this->call('migrate');
+
+        $this->output->writeln('<info>Run modules migrations ...</info>');
         $installer = new ModulesInstaller(ModulesLoader::getRegisteredModules());
 
         $installer->cleanOutputMessages();

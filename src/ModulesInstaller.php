@@ -13,22 +13,27 @@ class ModulesInstaller
     /**
      * @var array
      */
-    protected $_modules = [];
+    protected $modules = [];
 
     /**
      * @var Migrator
      */
-    protected $_migrator;
+    protected $migrator;
 
     /**
      * @var DatabaseMigrationRepository
      */
-    protected $_repository;
+    protected $repository;
 
     /**
      * @var array
      */
-    protected $_outputMessages = [];
+    protected $outputMessages = [];
+
+    /**
+     * @var array
+     */
+    protected $migrations = [];
 
 
     /**
@@ -36,23 +41,33 @@ class ModulesInstaller
      */
     public function __construct(array $modules)
     {
-        $this->_modules    = $modules;
-        $this->_migrator   = App::make('migrator');
-        $this->_repository = App::make('migration.repository');
+        $this->modules    = $modules;
+        $this->migrator   = App::make('migrator');
+        $this->repository = App::make('migration.repository');
 
         $this->init();
     }
 
 
     /**
+     * @param  bool $pretend
+     *
      * @return $this
      */
-    public function migrateModules()
+    public function migrateModules($pretend = false)
     {
         $this->output('Starting process of migration...');
 
-        foreach ($this->_modules as $module) {
+        foreach ($this->modules as $module) {
             $this->migrateModule($module);
+        }
+
+        sort($this->migrations);
+
+        $this->migrator->runMigrationList(array_unique($this->migrations), $pretend);
+
+        foreach ($this->migrator->getNotes() as $note) {
+            $this->output(' - ' . $note);
         }
 
         return $this;
@@ -68,11 +83,19 @@ class ModulesInstaller
      */
     public function migrateModule(ModuleContainerInterface $module)
     {
-        $this->_migrator->run($module->getPath(['database', 'migrations']));
+        $path  = $module->getPath(['database', 'migrations']);
+        $files = $this->migrator->getMigrationFiles($path);
 
-        $this->output($module->getName());
-        foreach ($this->_migrator->getNotes() as $note) {
-            $this->output(' - ' . $note);
+        // Once we grab all of the migration files for the path, we will compare them
+        // against the migrations that have already been run for this package then
+        // run each of the outstanding migrations against a database connection.
+        $ran = $this->migrator->getRepository()->getRan();
+
+        $migrations = array_diff($files, $ran);
+        $this->migrator->requireFiles($path, $migrations);
+
+        foreach ($migrations as $migration) {
+            $this->migrations[] = $migration;
         }
 
         return $this;
@@ -86,7 +109,7 @@ class ModulesInstaller
     {
         $this->output('Starting process of reseting...');
 
-        foreach ($this->_modules as $module) {
+        foreach ($this->modules as $module) {
             $this->addModuleToReset($module);
         }
 
@@ -104,7 +127,7 @@ class ModulesInstaller
     public function addModuleToReset(ModuleContainerInterface $module)
     {
         $path = $module->getPath(['database', 'migrations']);
-        $this->_migrator->requireFiles($path, $this->_migrator->getMigrationFiles($path));
+        $this->migrator->requireFiles($path, $this->migrator->getMigrationFiles($path));
 
         return $this;
     }
@@ -116,9 +139,9 @@ class ModulesInstaller
     public function rollbackModules()
     {
         while (true) {
-            $count = $this->_migrator->rollback();
+            $count = $this->migrator->rollback();
 
-            foreach ($this->_migrator->getNotes() as $note) {
+            foreach ($this->migrator->getNotes() as $note) {
                 $this->output($note);
             }
 
@@ -132,11 +155,14 @@ class ModulesInstaller
 
 
     /**
+     *
+     * @param array $data
+     *
      * @return $this
      */
     public function seedModules(array $data = [])
     {
-        foreach ($this->_modules as $module) {
+        foreach ($this->modules as $module) {
             $this->seedModule($module, array_get($data, $module->getName(), []));
         }
 
@@ -148,6 +174,7 @@ class ModulesInstaller
      * Run seeds on a module
      *
      * @param ModuleContainerInterface $module
+     * @param array                    $data
      *
      * @return $this
      */
@@ -173,7 +200,7 @@ class ModulesInstaller
      */
     public function getOutputMessages()
     {
-        return $this->_outputMessages;
+        return $this->outputMessages;
     }
 
 
@@ -182,7 +209,7 @@ class ModulesInstaller
      */
     public function cleanOutputMessages()
     {
-        $this->_outputMessages = [];
+        $this->outputMessages = [];
 
         return $this;
     }
@@ -192,7 +219,7 @@ class ModulesInstaller
     {
         $firstUp = ! Schema::hasTable('migrations');
         if ($firstUp) {
-            $this->_repository->createRepository();
+            $this->repository->createRepository();
             $this->output('Migration table created successfully.');
         }
     }
@@ -212,7 +239,7 @@ class ModulesInstaller
      */
     protected function output($message)
     {
-        $this->_outputMessages[] = $message;
+        $this->outputMessages[] = $message;
 
         return $this;
     }
