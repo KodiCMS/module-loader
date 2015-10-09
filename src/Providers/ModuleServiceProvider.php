@@ -4,6 +4,8 @@ namespace KodiCMS\ModulesLoader\Providers;
 use App;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AliasLoader;
+use KodiCMS\ModulesLoader\ModulesLoaderFacade;
+use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
 use KodiCMS\ModulesLoader\ModulesLoader as ModulesLoaderClass;
@@ -21,6 +23,15 @@ class ModuleServiceProvider extends ServiceProvider
         RouteServiceProvider::class,
         AppServiceProvider::class,
         ConfigServiceProvider::class,
+    ];
+
+    /**
+     * @var array
+     */
+    protected $commands = [
+        ModulesList::class,
+        ModulesMigrateCommand::class,
+        ModulesSeedCommand::class,
     ];
 
 
@@ -45,29 +56,21 @@ class ModuleServiceProvider extends ServiceProvider
 
         $this->registerAliases();
         $this->registerProviders();
+        $this->registerProviders();
 
-        $this->registerConsoleCommand('modules:list', ModulesList::class);
-        $this->registerConsoleCommand('modules:migrate', ModulesMigrateCommand::class);
-        $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
+        $this->registerConsoleCommands();
     }
 
 
     /**
-     * Registers a new console (artisan) command
-     *
-     * @param $key   The command name
-     * @param $class The command class
-     *
-     * @return void
+     * Registers console (artisan) commands
      */
-    public function registerConsoleCommand($key, $class)
+    public function registerConsoleCommands()
     {
-        $key             = 'command.' . $key;
-        $this->app[$key] = $this->app->share(function ($app) use ($class) {
-            return $app->make($class);
-        });
-
-        $this->commands($key);
+        foreach ($this->commands as $command)
+        {
+            $this->commands($command);
+        }
     }
 
 
@@ -77,8 +80,8 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerAliases()
     {
         AliasLoader::getInstance([
-            'ModulesLoader'     => \KodiCMS\ModulesLoader\ModulesLoaderFacade::class,
-            'ModulesFileSystem' => \KodiCMS\ModulesLoader\ModulesFileSystemFacade::class,
+            'ModulesLoader'     => ModulesLoaderFacade::class,
+            'ModulesFileSystem' => ModulesFileSystemFacade::class,
         ]);
     }
 
