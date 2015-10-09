@@ -18,9 +18,9 @@ class ModuleServiceProvider extends ServiceProvider
      * @var array
      */
     protected $providers = [
-        KodiCMS\ModulesLoader\Providers\RouteServiceProvider::class,
-        KodiCMS\ModulesLoader\Providers\AppServiceProvider::class,
-        KodiCMS\ModulesLoader\Providers\ConfigServiceProvider::class,
+        RouteServiceProvider::class,
+        AppServiceProvider::class,
+        ConfigServiceProvider::class,
     ];
 
     /**
@@ -52,17 +52,17 @@ class ModuleServiceProvider extends ServiceProvider
         $this->registerConsoleCommand('modules:migrate', ModulesMigrateCommand::class);
         $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
 
+        $loader = AliasLoader::getInstance();
+
+        $loader->alias('ModulesLoader', \KodiCMS\ModulesLoader\ModulesLoaderFacade::class);
+        $loader->alias('ModulesFileSystem', \KodiCMS\ModulesLoader\ModulesFileSystemFacade::class);
+
         $this->registerProviders();
     }
 
 
     public function boot()
     {
-        $loader = AliasLoader::getInstance();
-
-        $loader->alias('ModulesLoader', KodiCMS\ModulesLoader\ModulesLoaderFacade::class);
-        $loader->alias('ModulesFileSystem', KodiCMS\ModulesLoader\ModulesFileSystemFacade::class);
-
         foreach ($this->initedProviders as $provider) {
             if (method_exists($provider, 'boot')) {
                 $this->app->call([$provider, 'boot']);
@@ -96,7 +96,7 @@ class ModuleServiceProvider extends ServiceProvider
     protected function registerProviders()
     {
         foreach ($this->providers as $providerClass) {
-            $provider = $this->app->make($providerClass);
+            $provider = $this->app->make($providerClass, [$this->app]);
             $provider->register();
 
             $this->initedProviders[] = $provider;
