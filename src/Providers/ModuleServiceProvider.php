@@ -17,10 +17,16 @@ class ModuleServiceProvider extends ServiceProvider
      * Providers to register
      */
     protected $providers = [
-        'KodiCMS\ModulesLoader\Providers\RouteServiceProvider',
-        'KodiCMS\ModulesLoader\Providers\AppServiceProvider',
-        'KodiCMS\ModulesLoader\Providers\ConfigServiceProvider',
+        KodiCMS\ModulesLoader\Providers\RouteServiceProvider::class,
+        KodiCMS\ModulesLoader\Providers\AppServiceProvider::class,
+        KodiCMS\ModulesLoader\Providers\ConfigServiceProvider::class,
     ];
+
+    /**
+     * @var array
+     */
+    protected $initedProviders = [];
+
 
     /**
      * Register any application services.
@@ -44,6 +50,8 @@ class ModuleServiceProvider extends ServiceProvider
         $this->registerConsoleCommand('modules:list', ModulesList::class);
         $this->registerConsoleCommand('modules:migrate', ModulesMigrateCommand::class);
         $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
+
+        $this->registerProviders();
     }
 
 
@@ -54,20 +62,13 @@ class ModuleServiceProvider extends ServiceProvider
         $loader->alias('ModulesLoader', 'KodiCMS\ModulesLoader\ModulesLoaderFacade');
         $loader->alias('ModulesFileSystem', 'KodiCMS\ModulesLoader\ModulesFileSystemFacade');
 
-        $this->registerProviders();
-    }
-
-    /**
-     * Register providers
-     */
-    protected function registerProviders()
-    {
-        foreach ($this->providers as $providerClass)
-        {
-            $provider = app($providerClass, [app()]);
-            $provider->register();
+        foreach ($this->initedProviders as $provider) {
+            if (method_exists($provider, 'boot')) {
+                app()->call([$provider, 'boot']);
+            }
         }
     }
+
 
     /**
      * Registers a new console (artisan) command
@@ -85,5 +86,19 @@ class ModuleServiceProvider extends ServiceProvider
         });
 
         $this->commands($key);
+    }
+
+
+    /**
+     * Register providers
+     */
+    protected function registerProviders()
+    {
+        foreach ($this->providers as $providerClass) {
+            $provider = app()->make($providerClass);
+            $provider->register();
+
+            $this->initedProviders[] = $provider;
+        }
     }
 }
