@@ -1,8 +1,6 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
-use Event;
-use ModulesLoader;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseRouteServiceProvider;
 
@@ -26,11 +24,11 @@ class RouteServiceProvider extends BaseRouteServiceProvider
      */
     protected function loadCachedRoutes()
     {
-        Event::fire('routes.loading');
+        $this->app['events']->fire('routes.loading');
 
         require $this->app->getCachedRoutesPath();
 
-        Event::fire('routes.loaded');
+        $this->app['events']->fire('routes.loaded');
     }
 
 
@@ -43,12 +41,12 @@ class RouteServiceProvider extends BaseRouteServiceProvider
      */
     public function map(Router $router)
     {
-        Event::fire('routes.loading');
+        $this->app['events']->fire('routes.loading');
 
-        foreach (ModulesLoader::getRegisteredModules() as $module) {
+        foreach ($this->app['modules.loader']->getRegisteredModules() as $module) {
             $this->app->call([ $module, 'loadRoutes' ], [ $router ]);
         }
 
-        Event::fire('routes.loaded');
+        $this->app['events']->fire('routes.loaded');
     }
 }

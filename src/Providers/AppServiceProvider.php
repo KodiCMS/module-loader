@@ -1,9 +1,6 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
-use Event;
-use ModulesLoader;
-use ModulesFileSystem;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        ModulesLoader::registerModules($this->app);
+        $this->app['modules.loader']->registerModules($this->app);
     }
 
 
@@ -31,11 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        ModulesLoader::bootModules($this->app);
-        ModulesFileSystem::getFoundFilesFromCache();
+        $this->app['modules.loader']->bootModules($this->app);
 
-        Event::listen('app.shutdown', function () {
-            ModulesFileSystem::cacheFoundFiles();
+        $this->app['modules.filesystem']->getFoundFilesFromCache();
+
+        $this->app['events']->listen('app.shutdown', function () {
+            $this->app['modules.filesystem']->cacheFoundFiles();
         });
     }
 }

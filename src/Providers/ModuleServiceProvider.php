@@ -1,15 +1,38 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use KodiCMS\ModulesLoader\ModulesLoader;
 use KodiCMS\ModulesLoader\ModulesFileSystem;
+use KodiCMS\ModulesLoader\ModulesLoaderFacade;
+use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
 
 class ModuleServiceProvider extends ServiceProvider
 {
+
+    /**
+     * Providers to register
+     * @var array
+     */
+    protected $providers = [
+        RouteServiceProvider::class,
+        AppServiceProvider::class,
+        ConfigServiceProvider::class,
+    ];
+
+    /**
+     * @var array
+     */
+    protected $commands = [
+        ModulesList::class,
+        ModulesMigrateCommand::class,
+        ModulesSeedCommand::class,
+    ];
+
 
     /**
      * Register any application services.
@@ -30,27 +53,44 @@ class ModuleServiceProvider extends ServiceProvider
             return new ModulesFileSystem($app['modules.loader'], $app['files']);
         });
 
-        $this->registerConsoleCommand('modules:list', ModulesList::class);
-        $this->registerConsoleCommand('modules:migrate', ModulesMigrateCommand::class);
-        $this->registerConsoleCommand('modules:seed', ModulesSeedCommand::class);
+        $this->registerAliases();
+        $this->registerProviders();
+        $this->registerProviders();
+
+        $this->registerConsoleCommands();
     }
 
 
     /**
-     * Registers a new console (artisan) command
-     *
-     * @param $key   The command name
-     * @param $class The command class
-     *
-     * @return void
+     * Registers console (artisan) commands
      */
-    public function registerConsoleCommand($key, $class)
+    public function registerConsoleCommands()
     {
-        $key             = 'command.' . $key;
-        $this->app[$key] = $this->app->share(function ($app) use ($class) {
-            return $app->make($class);
-        });
+        foreach ($this->commands as $command) {
+            $this->commands($command);
+        }
+    }
 
-        $this->commands($key);
+
+    /**
+     * Register aliases
+     */
+    protected function registerAliases()
+    {
+        AliasLoader::getInstance([
+            'ModulesLoader'     => ModulesLoaderFacade::class,
+            'ModulesFileSystem' => ModulesFileSystemFacade::class,
+        ]);
+    }
+
+
+    /**
+     * Register providers
+     */
+    protected function registerProviders()
+    {
+        foreach ($this->providers as $providerClass) {
+            $this->app->register($providerClass);
+        }
     }
 }
