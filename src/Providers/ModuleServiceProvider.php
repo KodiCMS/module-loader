@@ -2,8 +2,8 @@
 namespace KodiCMS\ModulesLoader\Providers;
 
 use App;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\ServiceProvider;
 use KodiCMS\ModulesLoader\ModulesLoaderFacade;
 use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
