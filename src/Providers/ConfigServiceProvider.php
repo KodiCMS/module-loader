@@ -1,9 +1,6 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
-use Event;
-use Config;
-use ModulesLoader;
 use Illuminate\Support\ServiceProvider;
 
 class ConfigServiceProvider extends ServiceProvider
@@ -11,18 +8,19 @@ class ConfigServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        foreach (ModulesLoader::getRegisteredModules() as $module) {
+        foreach ($this->app['modules.loader']->getRegisteredModules() as $module) {
             $config = $module->loadConfig();
             foreach ($config as $group => $data) {
-                Config::set($group, $data);
+                $this->app['config']->set($group, $data);
             }
         }
 
-        Event::fire('config.loaded');
+        $this->app['events']->fire('config.loaded');
     }
 
 
     public function register()
     {
+
     }
 }

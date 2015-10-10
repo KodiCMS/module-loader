@@ -1,16 +1,15 @@
 <?php
 namespace KodiCMS\ModulesLoader\Providers;
 
-use App;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use KodiCMS\ModulesLoader\ModulesLoader;
+use KodiCMS\ModulesLoader\ModulesFileSystem;
 use KodiCMS\ModulesLoader\ModulesLoaderFacade;
 use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
-use KodiCMS\ModulesLoader\ModulesLoader as ModulesLoaderClass;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
-use KodiCMS\ModulesLoader\ModulesFileSystem as ModulesFileSystemClass;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -47,11 +46,11 @@ class ModuleServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('modules.loader', function () {
-            return new ModulesLoaderClass(config('app.modules', []));
+            return new ModulesLoader(config('app.modules', []));
         });
 
         $this->app->singleton('modules.filesystem', function ($app) {
-            return new ModulesFileSystemClass($app['modules.loader'], $app['files']);
+            return new ModulesFileSystem($app['modules.loader'], $app['files']);
         });
 
         $this->registerAliases();
@@ -67,8 +66,7 @@ class ModuleServiceProvider extends ServiceProvider
      */
     public function registerConsoleCommands()
     {
-        foreach ($this->commands as $command)
-        {
+        foreach ($this->commands as $command) {
             $this->commands($command);
         }
     }
