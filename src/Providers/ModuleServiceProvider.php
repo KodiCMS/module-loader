@@ -19,9 +19,9 @@ class ModuleServiceProvider extends ServiceProvider
      * @var array
      */
     protected $providers = [
+        ConfigServiceProvider::class,
         RouteServiceProvider::class,
         AppServiceProvider::class,
-        ConfigServiceProvider::class,
     ];
 
     /**
