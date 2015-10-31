@@ -55,7 +55,6 @@ class ModuleServiceProvider extends ServiceProvider
 
         $this->registerAliases();
         $this->registerProviders();
-        $this->registerProviders();
 
         $this->registerConsoleCommands();
     }
