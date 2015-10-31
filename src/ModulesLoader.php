@@ -17,6 +17,16 @@ class ModulesLoader
      */
     protected $shutdownCallbacks = [ ];
 
+    /**
+     * @var string
+     */
+    protected $defaultContainerClass = '\\App\\DefaultModuleContainer';
+
+    /**
+     * @var string
+     */
+    protected $applicationContainerClass = '\\App\\ModuleContainer';
+
 
     /**
      * @param array $modulesList
@@ -85,12 +95,10 @@ class ModulesLoader
 
         $namespace = trim($namespace, '\\');
 
-        $defaultModuleClass = '\\App\\DefaultModuleContainer';
-
         $customModuleClass = "\\$namespace\\ModuleContainer";
 
         if ($moduleName == 'App') {
-            $customModuleClass = "\\App\\ModuleContainer";
+            $customModuleClass = $this->applicationContainerClass;
         }
 
         if (is_null($moduleContainerClass) or class_exists($customModuleClass)) {
@@ -98,7 +106,9 @@ class ModulesLoader
         }
 
         if ( ! class_exists($moduleContainerClass)) {
-            $moduleContainerClass = class_exists($defaultModuleClass) ? $defaultModuleClass : \KodiCMS\ModulesLoader\ModuleContainer::class;
+            $moduleContainerClass = class_exists($this->defaultContainerClass)
+                ? $this->defaultContainerClass
+                : \KodiCMS\ModulesLoader\ModuleContainer::class;
         }
 
         $moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
