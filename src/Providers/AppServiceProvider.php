@@ -1,11 +1,11 @@
 <?php
+
 namespace KodiCMS\ModulesLoader\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
     /**
      * Register any application services.
      *
@@ -19,7 +19,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app['modules.loader']->registerModules($this->app);
     }
-
 
     /**
      * Bootstrap any application services.

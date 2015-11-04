@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -9,7 +10,6 @@ use KodiCMS\ModulesLoader\ModulesLoaderFacade as ModulesLoader;
 
 class ModulesMigrateCommand extends Command
 {
-
     use ConfirmableTrait;
 
     /**
@@ -17,13 +17,12 @@ class ModulesMigrateCommand extends Command
      */
     protected $name = 'modules:migrate';
 
-
     /**
      * Execute the console command.
      */
     public function fire()
     {
-        if ( ! $this->confirmToProceed()) {
+        if (!$this->confirmToProceed()) {
             return;
         }
 
@@ -53,7 +52,6 @@ class ModulesMigrateCommand extends Command
             $this->call('modules:seed');
         }
     }
-
 
     /**
      * Get the console command options.

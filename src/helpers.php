@@ -1,6 +1,6 @@
 <?php
 
-if ( ! function_exists('normalize_path')) {
+if (!function_exists('normalize_path')) {
     /**
      * @param string $path
      *
@@ -8,6 +8,6 @@ if ( ! function_exists('normalize_path')) {
      */
     function normalize_path($path)
     {
-        return str_replace([ '/', '\\' ], DIRECTORY_SEPARATOR, $path);
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
     }
 }

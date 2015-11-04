@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 use App;
@@ -11,7 +12,6 @@ use KodiCMS\ModulesLoader\Contracts\ModuleContainerInterface;
 
 class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 {
-
     /**
      * @var string
      */
@@ -51,7 +51,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      */
     protected $controllerNamespacePrefix = 'Http\\Controllers';
 
-
     /**
      * @param string      $moduleName
      * @param null|string $modulePath
@@ -59,7 +58,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      */
     public function __construct($moduleName, $modulePath = null, $namespace = null)
     {
-        if (empty( $modulePath )) {
+        if (empty($modulePath)) {
             $modulePath = $this->getDefaultModulePath($moduleName);
         }
 
@@ -69,7 +68,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         $this->setNamespace($namespace);
     }
 
-
     /**
      * @param string $moduleName
      *
@@ -77,9 +75,8 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      */
     protected function getDefaultModulePath($moduleName)
     {
-        return base_path('modules' . DIRECTORY_SEPARATOR . $moduleName);
+        return base_path('modules'.DIRECTORY_SEPARATOR.$moduleName);
     }
-
 
     /**
      * @return string
@@ -89,7 +86,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return $this->name;
     }
 
-
     /**
      * @return string
      */
@@ -97,7 +93,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     {
         return strtolower($this->getName());
     }
-
 
     /**
      * @return string
@@ -107,15 +102,13 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return $this->namespace;
     }
 
-
     /**
      * @return string
      */
     public function getControllerNamespace()
     {
-        return $this->getNamespace() . '\\' . $this->controllerNamespacePrefix;
+        return $this->getNamespace().'\\'.$this->controllerNamespacePrefix;
     }
-
 
     /**
      * @param strimg|array|null $sub
@@ -129,31 +122,28 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         }
 
         $path = $this->path;
-        if ( ! is_null($sub)) {
-            $path .= DIRECTORY_SEPARATOR . $sub;
+        if (!is_null($sub)) {
+            $path .= DIRECTORY_SEPARATOR.$sub;
         }
 
         return $path;
     }
-
 
     /**
      * @return string
      */
     public function getLocalePath()
     {
-        return $this->getPath([ 'resources', 'lang' ]);
+        return $this->getPath(['resources', 'lang']);
     }
-
 
     /**
      * @return string
      */
     public function getViewsPath()
     {
-        return $this->getPath([ 'resources', 'views' ]);
+        return $this->getPath(['resources', 'views']);
     }
-
 
     /**
      * @return string
@@ -163,24 +153,21 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return $this->getPath('config');
     }
 
-
     /**
      * @return string
      */
     public function getRoutesPath()
     {
-        return $this->getPath([ 'Http', 'routes.php' ]);
+        return $this->getPath(['Http', 'routes.php']);
     }
-
 
     /**
      * @return string
      */
     public function getServiceProviderPath()
     {
-        return $this->getPath([ 'Providers', 'ModuleServiceProvider.php' ]);
+        return $this->getPath(['Providers', 'ModuleServiceProvider.php']);
     }
-
 
     /**
      * @param \Illuminate\Foundation\Application $app
@@ -189,7 +176,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      */
     public function boot($app)
     {
-        if ( ! $this->isBooted) {
+        if (!$this->isBooted) {
             $this->loadViews();
             $this->loadTranslations();
             $this->isBooted = true;
@@ -198,7 +185,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return $this;
     }
 
-
     /**
      * @param \Illuminate\Foundation\Application $app
      *
@@ -206,12 +192,12 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      */
     public function register($app)
     {
-        if ( ! $this->isRegistered) {
+        if (!$this->isRegistered) {
             $this->loadSystemRoutes($app['router']);
 
             $serviceProviderPath = $this->getServiceProviderPath();
             if (is_file($serviceProviderPath)) {
-                $app->register($this->getNamespace() . '\Providers\ModuleServiceProvider');
+                $app->register($this->getNamespace().'\Providers\ModuleServiceProvider');
             }
 
             $this->isRegistered = true;
@@ -219,7 +205,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 
         return $this;
     }
-
 
     /**
      * @param Router $router
@@ -229,27 +214,27 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         $this->includeRoutes($router);
     }
 
-
     /**
      * Register a config file namespace.
+     *
      * @return void
      */
     public function loadConfig()
     {
         $path = $this->getConfigPath();
 
-        if ( ! is_dir($path)) {
-            return [ ];
+        if (!is_dir($path)) {
+            return [];
         }
 
         $configs = Cache::remember("moduleConfig::{$path}", Carbon::now()->addMinutes(10), function () use ($path) {
-            $configs = [ ];
+            $configs = [];
             foreach (new \DirectoryIterator($path) as $file) {
-                if ($file->isDot() OR strpos($file->getFilename(), '.php') === false) {
+                if ($file->isDot() or strpos($file->getFilename(), '.php') === false) {
                     continue;
                 }
-                $key           = $file->getBasename('.php');
-                $configs[$key] = array_merge_recursive(require $file->getPathname(), app('config')->get($key, [ ]));
+                $key = $file->getBasename('.php');
+                $configs[$key] = array_merge_recursive(require $file->getPathname(), app('config')->get($key, []));
             }
 
             return $configs;
@@ -258,21 +243,19 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return $configs;
     }
 
-
     /**
      * @return array
      */
     public function getPublishPath()
     {
-        if ( ! is_dir($this->getViewsPath())) {
-            return [ ];
+        if (!is_dir($this->getViewsPath())) {
+            return [];
         }
 
         return [
-            $this->getViewsPath() => $this->publishViewPath()
+            $this->getViewsPath() => $this->publishViewPath(),
         ];
     }
-
 
     /**
      * @return bool
@@ -281,7 +264,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     {
         return $this->isPublishable;
     }
-
 
     /**
      * Get the instance as an array.
@@ -302,11 +284,10 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         ];
     }
 
-
     /**
      * Convert the object to its JSON representation.
      *
-     * @param  int $options
+     * @param int $options
      *
      * @return string
      */
@@ -315,19 +296,17 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         return json_encode($this->toArray(), $options);
     }
 
-
     /**
      * @param Router $router
      */
     protected function includeRoutes(Router $router)
     {
         if (is_file($routesFile = $this->getRoutesPath())) {
-            $router->group([ 'namespace' => $this->getControllerNamespace() ], function ($router) use ($routesFile) {
+            $router->group(['namespace' => $this->getControllerNamespace()], function ($router) use ($routesFile) {
                 require $routesFile;
             });
         }
     }
-
 
     /**
      * Register a view file namespace.
@@ -343,7 +322,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         view()->addNamespace($this->getKey(), $this->getViewsPath());
     }
 
-
     /**
      * @return string
      */
@@ -351,7 +329,6 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     {
         return base_path(normalize_path("/resources/views/modules/{$this->getName()}"));
     }
-
 
     /**
      * Register a translation file namespace.
@@ -363,26 +340,22 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
         app('translator')->addNamespace($this->getKey(), $this->getLocalePath());
     }
 
-
     /**
      * @param Router $router
      */
     protected function loadSystemRoutes(Router $router)
     {
-
     }
-
 
     /**
      * @param string|null $namespace
      */
     protected function setNamespace($namespace = null)
     {
-        if ( ! is_null($namespace)) {
+        if (!is_null($namespace)) {
             $this->namespace = $namespace;
         }
     }
-
 
     /**
      * @return string

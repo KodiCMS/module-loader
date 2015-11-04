@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader\Providers;
 
 use Illuminate\Routing\Router;
@@ -6,7 +7,6 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as BaseRouteSer
 
 class RouteServiceProvider extends BaseRouteServiceProvider
 {
-
     /**
      * This namespace is applied to the controller routes in your routes file.
      *
@@ -15,7 +15,6 @@ class RouteServiceProvider extends BaseRouteServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
-
 
     /**
      * Load the cached routes for the application.
@@ -31,11 +30,10 @@ class RouteServiceProvider extends BaseRouteServiceProvider
         $this->app['events']->fire('routes.loaded');
     }
 
-
     /**
      * Define the routes for the application.
      *
-     * @param  \Illuminate\Routing\Router $router
+     * @param \Illuminate\Routing\Router $router
      *
      * @return void
      */
@@ -44,7 +42,7 @@ class RouteServiceProvider extends BaseRouteServiceProvider
         $this->app['events']->fire('routes.loading');
 
         foreach ($this->app['modules.loader']->getRegisteredModules() as $module) {
-            $this->app->call([ $module, 'loadRoutes' ], [ $router ]);
+            $this->app->call([$module, 'loadRoutes'], [$router]);
         }
 
         $this->app['events']->fire('routes.loaded');

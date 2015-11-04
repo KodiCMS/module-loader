@@ -1,11 +1,11 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 use Illuminate\Support\Facades\Facade;
 
 class ModulesLoaderFacade extends Facade
 {
-
     /**
      * Get the registered name of the component.
      *
@@ -15,5 +15,4 @@ class ModulesLoaderFacade extends Facade
     {
         return 'modules.loader';
     }
-
 }
