@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader\Console\Commands;
 
 use ModulesLoader;
@@ -7,7 +8,6 @@ use Symfony\Component\Console\Helper\TableSeparator;
 
 class ModulesList extends Command
 {
-
     /**
      * The console command name.
      *
@@ -22,9 +22,8 @@ class ModulesList extends Command
      */
     protected $headers = [
         'Name',
-        ''
+        '',
     ];
-
 
     /**
      * Execute the console command.
@@ -33,22 +32,22 @@ class ModulesList extends Command
      */
     public function fire()
     {
-        $modules = [ ];
+        $modules = [];
 
         foreach (ModulesLoader::getRegisteredModules() as $module) {
             $modules[] = [
-                $module->getName() . ' [' . get_class($module) . ']',
-                ''
+                $module->getName().' ['.get_class($module).']',
+                '',
             ];
-            $modules[] = new TableSeparator;
+            $modules[] = new TableSeparator();
             foreach ($module->toArray() as $key => $value) {
                 $modules[] = [
                     studly_case($key),
-                    is_string($value) ? $value : stripslashes(json_encode($value))
+                    is_string($value) ? $value : stripslashes(json_encode($value)),
                 ];
             }
 
-            $modules[] = new TableSeparator;
+            $modules[] = new TableSeparator();
         }
 
         $this->table($this->headers, $modules);

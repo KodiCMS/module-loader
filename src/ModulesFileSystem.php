@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 use Cache;
@@ -7,7 +8,6 @@ use Illuminate\Filesystem\Filesystem;
 
 class ModulesFileSystem
 {
-
     /**
      * @var ModuleLoader
      */
@@ -19,7 +19,7 @@ class ModulesFileSystem
     protected $filesystem;
 
     /**
-     * @var  array   File path cache, used when caching is true
+     * @var array File path cache, used when caching is true
      */
     protected $files = [];
 
@@ -28,7 +28,6 @@ class ModulesFileSystem
      */
     protected $filesChanged = false;
 
-
     /**
      * @param ModulesLoader $loader
      * @param Filesystem    $filesystem
@@ -36,9 +35,8 @@ class ModulesFileSystem
     public function __construct(ModulesLoader $loader, Filesystem $filesystem)
     {
         $this->moduleLoader = $loader;
-        $this->filesystem   = $filesystem;
+        $this->filesystem = $filesystem;
     }
-
 
     /**
      * @param string|array|null $sub
@@ -59,15 +57,14 @@ class ModulesFileSystem
         return $paths;
     }
 
-
     /**
-     * @param   string  $dir   directory name (views, i18n, classes, extensions, etc.)
-     * @param   string  $file  filename with subdirectory
-     * @param   string  $ext   extension to search for
-     * @param   boolean $array return an array of files?
+     * @param string $dir   directory name (views, i18n, classes, extensions, etc.)
+     * @param string $file  filename with subdirectory
+     * @param string $ext   extension to search for
+     * @param bool   $array return an array of files?
      *
-     * @return  array   a list of files when $array is TRUE
-     * @return  string  single file path
+     * @return array  a list of files when $array is TRUE
+     * @return string single file path
      */
     public function findFile($dir, $file, $ext = null, $array = false)
     {
@@ -85,9 +82,9 @@ class ModulesFileSystem
         // Create a partial path of the filename
         $path = normalize_path("{$dir}/{$file}{$ext}");
 
-        if (isset( $this->files[$path . ( $array ? '_array' : '_path' )] )) {
+        if (isset($this->files[$path.($array ? '_array' : '_path')])) {
             // This path has been cached
-            return $this->files[$path . ( $array ? '_array' : '_path' )];
+            return $this->files[$path.($array ? '_array' : '_path')];
         }
 
         if ($array) {
@@ -95,11 +92,11 @@ class ModulesFileSystem
             $found = [];
 
             foreach ($this->moduleLoader->getRegisteredModules() as $module) {
-                $dir = $module->getPath() . DIRECTORY_SEPARATOR;
+                $dir = $module->getPath().DIRECTORY_SEPARATOR;
 
-                if (is_file($dir . $path)) {
+                if (is_file($dir.$path)) {
                     // This path has a file, add it to the list
-                    $found[] = $dir . $path;
+                    $found[] = $dir.$path;
                 }
             }
         } else {
@@ -107,11 +104,11 @@ class ModulesFileSystem
             $found = false;
 
             foreach ($this->moduleLoader->getRegisteredModules() as $module) {
-                $dir = $module->getPath() . DIRECTORY_SEPARATOR;
+                $dir = $module->getPath().DIRECTORY_SEPARATOR;
 
-                if (is_file($dir . $path)) {
+                if (is_file($dir.$path)) {
                     // A path has been found
-                    $found = $dir . $path;
+                    $found = $dir.$path;
 
                     // Stop searching
                     break;
@@ -120,7 +117,7 @@ class ModulesFileSystem
         }
 
         // Add the path to the cache
-        $this->files[$path . ( $array ? '_array' : '_path' )] = $found;
+        $this->files[$path.($array ? '_array' : '_path')] = $found;
 
         // Files have been changed
         $this->filesChanged = true;
@@ -128,12 +125,11 @@ class ModulesFileSystem
         return $found;
     }
 
-
     /**
-     * @param   string       $directory directory name
-     * @param   string|array $ext
+     * @param string       $directory directory name
+     * @param string|array $ext
      *
-     * @return  array
+     * @return array
      */
     public function listFiles($directory = null, $ext = null)
     {
@@ -153,18 +149,18 @@ class ModulesFileSystem
         $found = [];
 
         foreach ($paths as $moduleName => $path) {
-            if (is_dir($path = normalize_path($path . DIRECTORY_SEPARATOR . $directory))) {
+            if (is_dir($path = normalize_path($path.DIRECTORY_SEPARATOR.$directory))) {
                 foreach ($this->filesystem->allFiles($path) as $file) {
                     $fileExt = $file->getExtension();
 
                     // Relative filename is the array key
                     $key = $file->getRelativePathname();
 
-                    if ( ! empty( $ext ) and is_array($ext) ? ! in_array($fileExt, $ext) : ( $fileExt != $ext )) {
+                    if (!empty($ext) and is_array($ext) ? !in_array($fileExt, $ext) : ($fileExt != $ext)) {
                         continue;
                     }
 
-                    if ( ! isset( $found[$key] )) {
+                    if (!isset($found[$key])) {
                         $found[$key] = $file;
                     }
                 }
@@ -177,7 +173,6 @@ class ModulesFileSystem
         return $found;
     }
 
-
     /**
      * @param string|null $namespace
      *
@@ -186,9 +181,9 @@ class ModulesFileSystem
     public function getModuleNameByNamespace($namespace = null)
     {
         $defaultNamespace = 'app';
-        $currentRoute     = app('router')->getCurrentRoute();
+        $currentRoute = app('router')->getCurrentRoute();
 
-        if (is_null($namespace) and ! is_null($currentRoute)) {
+        if (is_null($namespace) and !is_null($currentRoute)) {
             $namespace = $currentRoute->getAction()['namespace'];
         }
 
@@ -197,7 +192,7 @@ class ModulesFileSystem
         }
 
         foreach ($this->moduleLoader->getRegisteredModules() as $module) {
-            if ( ! empty( $moduleNamespace = $module->getNamespace() )) {
+            if (!empty($moduleNamespace = $module->getNamespace())) {
                 if (strpos($namespace, $moduleNamespace) === 0) {
                     return $module->getKey();
                 }
@@ -207,12 +202,10 @@ class ModulesFileSystem
         return $defaultNamespace;
     }
 
-
     public function getFoundFilesFromCache()
     {
         $this->files = Cache::get('ModulesFileSystem::findFile', []);
     }
-
 
     public function cacheFoundFiles()
     {

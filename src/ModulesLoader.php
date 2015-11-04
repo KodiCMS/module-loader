@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 use Illuminate\Foundation\Application;
@@ -6,16 +7,15 @@ use KodiCMS\ModulesLoader\Contracts\ModuleContainerInterface;
 
 class ModulesLoader
 {
+    /**
+     * @var array
+     */
+    protected $registeredModules = [];
 
     /**
      * @var array
      */
-    protected $registeredModules = [ ];
-
-    /**
-     * @var array
-     */
-    protected $shutdownCallbacks = [ ];
+    protected $shutdownCallbacks = [];
 
     /**
      * @var string
@@ -27,20 +27,19 @@ class ModulesLoader
      */
     protected $applicationContainerClass = '\\App\\ModuleContainer';
 
-
     /**
      * @param array $modulesList
      */
     public function __construct(array $modulesList)
     {
-        register_shutdown_function([ $this, 'shutdownHandler' ]);
+        register_shutdown_function([$this, 'shutdownHandler']);
 
         foreach ($modulesList as $moduleName => $modulePath) {
             $moduleNamespace = null;
 
             if (is_array($modulePath)) {
                 $moduleNamespace = array_get($modulePath, 'namespace');
-                $modulePath      = array_get($modulePath, 'path');
+                $modulePath = array_get($modulePath, 'path');
             } else {
                 if (is_numeric($moduleName)) {
                     $moduleName = $modulePath;
@@ -49,7 +48,7 @@ class ModulesLoader
             }
 
             if (is_null($modulePath)) {
-                $modulePath = base_path('modules' . DIRECTORY_SEPARATOR . $moduleName);
+                $modulePath = base_path('modules'.DIRECTORY_SEPARATOR.$moduleName);
             }
 
             $this->addModule($moduleName, $modulePath, $moduleNamespace);
@@ -58,7 +57,6 @@ class ModulesLoader
         $this->addModule('App', base_path(), '', \KodiCMS\ModulesLoader\AppModuleContainer::class);
     }
 
-
     /**
      * @return array
      */
@@ -66,7 +64,6 @@ class ModulesLoader
     {
         return $this->registeredModules;
     }
-
 
     /**
      * @param string $moduleName
@@ -77,7 +74,6 @@ class ModulesLoader
     {
         return array_get($this->getRegisteredModules(), $moduleName);
     }
-
 
     /**
      * @param string      $moduleName
@@ -90,7 +86,7 @@ class ModulesLoader
     public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null)
     {
         if (is_null($namespace)) {
-            $namespace = 'Modules\\' . $moduleName;
+            $namespace = 'Modules\\'.$moduleName;
         }
 
         $namespace = trim($namespace, '\\');
@@ -105,7 +101,7 @@ class ModulesLoader
             $moduleContainerClass = $customModuleClass;
         }
 
-        if ( ! class_exists($moduleContainerClass)) {
+        if (!class_exists($moduleContainerClass)) {
             $moduleContainerClass = class_exists($this->defaultContainerClass)
                 ? $this->defaultContainerClass
                 : \KodiCMS\ModulesLoader\ModuleContainer::class;
@@ -118,7 +114,6 @@ class ModulesLoader
         return $this;
     }
 
-
     /**
      * @param ModuleContainerInterface $module
      */
@@ -126,7 +121,6 @@ class ModulesLoader
     {
         $this->registeredModules[$module->getName()] = $module;
     }
-
 
     /**
      * @param Application $app
@@ -142,7 +136,6 @@ class ModulesLoader
         return $this;
     }
 
-
     /**
      * @param Application $app
      *
@@ -157,7 +150,6 @@ class ModulesLoader
         return $this;
     }
 
-
     /**
      * @param Closure $callback
      */
@@ -165,7 +157,6 @@ class ModulesLoader
     {
         $this->shutdownCallbacks[] = $callback;
     }
-
 
     public function shutdownHandler()
     {

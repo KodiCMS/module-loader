@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader\Providers;
 
 use Illuminate\Foundation\AliasLoader;
@@ -13,9 +14,9 @@ use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
 
 class ModuleServiceProvider extends ServiceProvider
 {
-
     /**
-     * Providers to register
+     * Providers to register.
+     *
      * @var array
      */
     protected $providers = [
@@ -32,7 +33,6 @@ class ModuleServiceProvider extends ServiceProvider
         ModulesMigrateCommand::class,
         ModulesSeedCommand::class,
     ];
-
 
     /**
      * Register any application services.
@@ -59,9 +59,8 @@ class ModuleServiceProvider extends ServiceProvider
         $this->registerConsoleCommands();
     }
 
-
     /**
-     * Registers console (artisan) commands
+     * Registers console (artisan) commands.
      */
     public function registerConsoleCommands()
     {
@@ -70,9 +69,8 @@ class ModuleServiceProvider extends ServiceProvider
         }
     }
 
-
     /**
-     * Register aliases
+     * Register aliases.
      */
     protected function registerAliases()
     {
@@ -82,9 +80,8 @@ class ModuleServiceProvider extends ServiceProvider
         ]);
     }
 
-
     /**
-     * Register providers
+     * Register providers.
      */
     protected function registerProviders()
     {

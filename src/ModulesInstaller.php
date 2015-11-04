@@ -1,4 +1,5 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 use App;
@@ -9,7 +10,6 @@ use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 
 class ModulesInstaller
 {
-
     /**
      * @var array
      */
@@ -35,22 +35,20 @@ class ModulesInstaller
      */
     protected $migrations = [];
 
-
     /**
      * @param array $modules
      */
     public function __construct(array $modules)
     {
-        $this->modules    = $modules;
-        $this->migrator   = App::make('migrator');
+        $this->modules = $modules;
+        $this->migrator = App::make('migrator');
         $this->repository = App::make('migration.repository');
 
         $this->init();
     }
 
-
     /**
-     * @param  bool $pretend
+     * @param bool $pretend
      *
      * @return $this
      */
@@ -67,15 +65,14 @@ class ModulesInstaller
         $this->migrator->runMigrationList(array_unique($this->migrations), $pretend);
 
         foreach ($this->migrator->getNotes() as $note) {
-            $this->output(' - ' . $note);
+            $this->output(' - '.$note);
         }
 
         return $this;
     }
 
-
     /**
-     * Run migrations on a single module
+     * Run migrations on a single module.
      *
      * @param ModuleContainerInterface $module
      *
@@ -83,7 +80,7 @@ class ModulesInstaller
      */
     public function migrateModule(ModuleContainerInterface $module)
     {
-        $path  = $module->getPath(['database', 'migrations']);
+        $path = $module->getPath(['database', 'migrations']);
         $files = $this->migrator->getMigrationFiles($path);
 
         // Once we grab all of the migration files for the path, we will compare them
@@ -101,7 +98,6 @@ class ModulesInstaller
         return $this;
     }
 
-
     /**
      * @return $this
      */
@@ -116,9 +112,8 @@ class ModulesInstaller
         return $this->rollbackModules();
     }
 
-
     /**
-     * Reset migrations on a single module
+     * Reset migrations on a single module.
      *
      * @param ModuleContainerInterface $module
      *
@@ -131,7 +126,6 @@ class ModulesInstaller
 
         return $this;
     }
-
 
     /**
      * @return $this
@@ -153,9 +147,7 @@ class ModulesInstaller
         return $this;
     }
 
-
     /**
-     *
      * @param array $data
      *
      * @return $this
@@ -169,9 +161,8 @@ class ModulesInstaller
         return $this;
     }
 
-
     /**
-     * Run seeds on a module
+     * Run seeds on a module.
      *
      * @param ModuleContainerInterface $module
      * @param array                    $data
@@ -180,9 +171,9 @@ class ModulesInstaller
      */
     public function seedModule(ModuleContainerInterface $module, array $data = [])
     {
-        $className = $module->getNamespace() . '\\database\\seeds\\DatabaseSeeder';
+        $className = $module->getNamespace().'\\database\\seeds\\DatabaseSeeder';
 
-        if ( ! class_exists($className)) {
+        if (!class_exists($className)) {
             return false;
         }
 
@@ -194,7 +185,6 @@ class ModulesInstaller
         return $this;
     }
 
-
     /**
      * @return array
      */
@@ -202,7 +192,6 @@ class ModulesInstaller
     {
         return $this->outputMessages;
     }
-
 
     /**
      * @return $this
@@ -214,23 +203,20 @@ class ModulesInstaller
         return $this;
     }
 
-
     protected function init()
     {
-        $firstUp = ! Schema::hasTable('migrations');
+        $firstUp = !Schema::hasTable('migrations');
         if ($firstUp) {
             $this->repository->createRepository();
             $this->output('Migration table created successfully.');
         }
     }
 
-
     protected function deinit()
     {
         Schema::dropIfExists('migrations');
         $this->output('Migration table dropped.');
     }
-
 
     /**
      * @param string $message

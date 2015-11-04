@@ -1,9 +1,9 @@
 <?php
+
 namespace KodiCMS\ModulesLoader;
 
 class AppModuleContainer extends ModuleContainer
 {
-
     /**
      * @var string
      */
@@ -14,7 +14,6 @@ class AppModuleContainer extends ModuleContainer
      */
     protected $isPublishable = false;
 
-
     /**
      * @param \Illuminate\Foundation\Application $app
      *
@@ -22,13 +21,12 @@ class AppModuleContainer extends ModuleContainer
      */
     public function boot($app)
     {
-        if ( ! $this->isBooted) {
+        if (!$this->isBooted) {
             $this->isBooted = true;
         }
 
         return $this;
     }
-
 
     /**
      * @param \Illuminate\Foundation\Application $app
@@ -42,40 +40,37 @@ class AppModuleContainer extends ModuleContainer
         return $this;
     }
 
-
     /**
      * @return string
      */
     public function getRoutesPath()
     {
-        return $this->getPath([ 'app', 'Http', 'routes.php' ]);
+        return $this->getPath(['app', 'Http', 'routes.php']);
     }
-
 
     /**
      * @return string
      */
     public function getServiceProviderPath()
     {
-        return $this->getPath([ 'app', 'Providers', 'ModuleServiceProvider.php' ]);
+        return $this->getPath(['app', 'Providers', 'ModuleServiceProvider.php']);
     }
-
 
     /**
      * Register a config file namespace.
+     *
      * @return void
      */
     public function loadConfig()
     {
-        return [ ];
+        return [];
     }
-
 
     /**
      * @return array
      */
     public function getPublishPath()
     {
-        return [ ];
+        return [];
     }
 }
