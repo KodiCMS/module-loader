@@ -11,6 +11,7 @@ use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesListCommand;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
+use KodiCMS\ModulesLoader\Console\Commands\ModulesAssetsPublishCommand;
 
 class ModuleServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,7 @@ class ModuleServiceProvider extends ServiceProvider
         ModulesListCommand::class,
         ModulesMigrateCommand::class,
         ModulesSeedCommand::class,
+        ModulesAssetsPublishCommand::class
     ];
 
     /**

@@ -164,6 +164,14 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     /**
      * @return string
      */
+    public function getAssetsPath()
+    {
+        return $this->getPath('Assets');
+    }
+
+    /**
+     * @return string
+     */
     public function getServiceProviderPath()
     {
         return $this->getPath(['Providers', 'ModuleServiceProvider.php']);
