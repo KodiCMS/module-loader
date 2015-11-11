@@ -63,7 +63,7 @@ class ModulesAssetsPublishCommand extends Command
         ]);
 
         foreach ($manager->listContents('from://', true) as $file) {
-            if ($file['type'] === 'file' && (! $manager->has('to://'.$file['path']) || $this->option('force'))) {
+            if ($file['type'] === 'file') {
                 $manager->put('to://'.$file['path'], $manager->read('from://'.$file['path']));
             }
         }
