@@ -182,7 +182,7 @@ class ModulesFileSystem
      */
     public function mergeFiles($directory, $file, $ext = null)
     {
-        $cacheKey = 'files::merge::'.md5($directory . $file . $ext);
+        $cacheKey = 'files::merge::'.md5($directory.$file.$ext);
 
         $content = Cache::remember($cacheKey, Carbon::now()->minute(20), function () use ($directory, $file, $ext) {
             $return = '';
