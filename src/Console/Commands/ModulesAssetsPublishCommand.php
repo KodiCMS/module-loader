@@ -42,8 +42,7 @@ class ModulesAssetsPublishCommand extends Command
         foreach ($modules as $module) {
             $from = $module->getAssetsPath();
             if ($this->files->isDirectory($from)) {
-                $to = public_path('cms'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.$module->getKey());
-                $this->publishDirectory($from, $to);
+                $this->publishDirectory($from, $module->getAssetsPublicPath());
             }
         }
     }
