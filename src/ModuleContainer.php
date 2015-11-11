@@ -289,14 +289,16 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     public function toArray()
     {
         return [
-            'path'        => $this->getPath(),
-            'publishPath' => $this->getPublishPath(),
-            'localePath'  => $this->getLocalePath(),
-            'viewsPath'   => $this->getViewsPath(),
-            'configPath'  => $this->getConfigPath(),
-            'routesPath'  => $this->getRoutesPath(),
-            'namespace'   => $this->getNamespace(),
-            'name'        => $this->getName(),
+            'path'             => $this->getPath(),
+            'assetsPath'       => $this->getAssetsPath(),
+            'assetsPublicPath' => $this->getAssetsPublicPath(),
+            'publishPath'      => $this->getPublishPath(),
+            'localePath'       => $this->getLocalePath(),
+            'viewsPath'        => $this->getViewsPath(),
+            'configPath'       => $this->getConfigPath(),
+            'routesPath'       => $this->getRoutesPath(),
+            'namespace'        => $this->getNamespace(),
+            'name'             => $this->getName(),
         ];
     }
 
