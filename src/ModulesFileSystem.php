@@ -63,8 +63,8 @@ class ModulesFileSystem
      * @param string $ext   extension to search for
      * @param bool   $array return an array of files?
      *
-     * @return array  a list of files when $array is TRUE
-     * @return string single file path
+     * @return array  a list of files when $array is TRUE cached by 10 minutes
+     * @return string single file path cached by 10 minutes
      */
     public function findFile($dir, $file, $ext = null, $array = false)
     {
@@ -171,6 +171,29 @@ class ModulesFileSystem
         ksort($found);
 
         return $found;
+    }
+
+    /**
+     * @param string $directory
+     * @param string $file
+     * @param string $ext
+     *
+     * @return string cached by 20 minutes
+     */
+    public function mergeFiles($directory, $file, $ext = null)
+    {
+        $cacheKey = 'files::merge::'.md5($directory . $file . $ext);
+
+        $content = Cache::remember($cacheKey, Carbon::now()->minute(20), function () use ($directory, $file, $ext) {
+            $return = '';
+            foreach ($this->findFile($directory, $file, $ext, true) as $file) {
+                $return .= file_get_contents($file).PHP_EOL.PHP_EOL;
+            }
+
+            return $return;
+        });
+
+        return $content;
     }
 
     /**
