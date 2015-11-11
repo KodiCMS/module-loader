@@ -8,7 +8,7 @@ use KodiCMS\ModulesLoader\ModulesLoader;
 use KodiCMS\ModulesLoader\ModulesFileSystem;
 use KodiCMS\ModulesLoader\ModulesLoaderFacade;
 use KodiCMS\ModulesLoader\ModulesFileSystemFacade;
-use KodiCMS\ModulesLoader\Console\Commands\ModulesList;
+use KodiCMS\ModulesLoader\Console\Commands\ModulesListCommand;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesSeedCommand;
 use KodiCMS\ModulesLoader\Console\Commands\ModulesMigrateCommand;
 
@@ -29,7 +29,7 @@ class ModuleServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        ModulesList::class,
+        ModulesListCommand::class,
         ModulesMigrateCommand::class,
         ModulesSeedCommand::class,
     ];
