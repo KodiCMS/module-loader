@@ -14,7 +14,7 @@ https://packagist.org/packages/kodicms/module-loader
 {
   "require": {
     ...
-    "kodicms/module-loader": "~2.0"
+    "kodicms/module-loader": "2.*"
        ...
   }
 }
