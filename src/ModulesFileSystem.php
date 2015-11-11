@@ -63,7 +63,7 @@ class ModulesFileSystem
      * @param string $ext   extension to search for
      * @param bool   $array return an array of files?
      *
-     * @return array  a list of files when $array is TRUE cached by 10 minutes
+     * @return array  a list of files when $array is true cached by 10 minutes
      * @return string single file path cached by 10 minutes
      */
     public function findFile($dir, $file, $ext = null, $array = false)
@@ -194,6 +194,27 @@ class ModulesFileSystem
         });
 
         return $content;
+    }
+
+    /**
+     * @param string $directory
+     */
+    public function requireFiles($directory)
+    {
+        foreach ($this->listFiles($directory) as $file) {
+            require_once $file;
+        }
+    }
+
+    /**
+     * @param string $directory
+     * @param string $file
+     */
+    public function requireFile($directory, $file)
+    {
+        foreach ($this->findFile($directory, $file, true) as $file) {
+            require_once $file;
+        }
     }
 
     /**
