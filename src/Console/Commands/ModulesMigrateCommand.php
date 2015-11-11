@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
 use KodiCMS\ModulesLoader\ModulesInstaller;
 use Symfony\Component\Console\Input\InputOption;
-use KodiCMS\ModulesLoader\ModulesLoaderFacade as ModulesLoader;
+use Illuminate\Contracts\Foundation\Application;
 
 class ModulesMigrateCommand extends Command
 {
@@ -19,8 +19,10 @@ class ModulesMigrateCommand extends Command
 
     /**
      * Execute the console command.
+     *
+     * @param Application $app
      */
-    public function fire()
+    public function fire(Application $app)
     {
         if (!$this->confirmToProceed()) {
             return;
@@ -30,7 +32,7 @@ class ModulesMigrateCommand extends Command
         $this->call('migrate');
 
         $this->output->writeln('<info>Run modules migrations ...</info>');
-        $installer = new ModulesInstaller(ModulesLoader::getRegisteredModules());
+        $installer = new ModulesInstaller($app['modules.loader']->getRegisteredModules());
 
         $installer->cleanOutputMessages();
 
