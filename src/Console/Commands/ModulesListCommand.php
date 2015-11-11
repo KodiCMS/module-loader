@@ -33,7 +33,6 @@ class ModulesListCommand extends Command
     {
         $modules = [];
 
-
         foreach (app('modules.loader')->getRegisteredModules() as $module) {
             $modules[] = [
                 $module->getName().' ['.get_class($module).']',

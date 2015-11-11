@@ -33,7 +33,7 @@ class ModuleServiceProvider extends ServiceProvider
         ModulesListCommand::class,
         ModulesMigrateCommand::class,
         ModulesSeedCommand::class,
-        ModulesAssetsPublishCommand::class
+        ModulesAssetsPublishCommand::class,
     ];
 
     /**
