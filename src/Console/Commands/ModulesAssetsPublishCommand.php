@@ -5,11 +5,9 @@ namespace KodiCMS\ModulesLoader\Console\Commands;
 use Illuminate\Console\Command;
 use League\Flysystem\MountManager;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Console\ConfirmableTrait;
 use KodiCMS\ModulesLoader\ModuleContainer;
 use League\Flysystem\Filesystem as Flysystem;
 use Illuminate\Contracts\Foundation\Application;
-use Symfony\Component\Console\Input\InputOption;
 use League\Flysystem\Adapter\Local as LocalAdapter;
 
 class ModulesAssetsPublishCommand extends Command
@@ -51,8 +49,9 @@ class ModulesAssetsPublishCommand extends Command
     /**
      * Publish the directory to the given directory.
      *
-     * @param  string  $from
-     * @param  string  $to
+     * @param string $from
+     * @param string $to
+     *
      * @return void
      */
     protected function publishDirectory($from, $to)
@@ -74,9 +73,10 @@ class ModulesAssetsPublishCommand extends Command
     /**
      * Write a status message to the console.
      *
-     * @param  string  $from
-     * @param  string  $to
-     * @param  string  $type
+     * @param string $from
+     * @param string $to
+     * @param string $type
+     *
      * @return void
      */
     protected function status($from, $to, $type)
