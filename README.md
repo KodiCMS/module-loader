@@ -96,4 +96,4 @@ return [
  * `php artisan modules:list` - просмотр списка подключенных модулей  
  * `php artisan modules:migrate` - выполнение миграций из модулей *(Доступны параметры аналогичные для стандартной команды `migrate`)*
  * `php artisan modules:seed` - сидирование данных из модулей
- * `php artisan modules:assets:publish` - публикация assets файлов из папки Assets в `public/cms/modules/{module}`
+ * `php artisan modules:assets:publish` - публикация assets файлов из папки Assets в `public/modules/{module}`
