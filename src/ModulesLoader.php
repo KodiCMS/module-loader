@@ -2,11 +2,14 @@
 
 namespace KodiCMS\ModulesLoader;
 
+use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Foundation\Application;
 use KodiCMS\ModulesLoader\Contracts\ModuleContainerInterface;
 
 class ModulesLoader
 {
+    use AppNamespaceDetectorTrait;
+
     /**
      * @var array
      */
@@ -54,7 +57,7 @@ class ModulesLoader
             $this->addModule($moduleName, $modulePath, $moduleNamespace);
         }
 
-        $this->addModule('App', base_path(), '', \KodiCMS\ModulesLoader\AppModuleContainer::class);
+        $this->addModule('App', base_path(), $this->getAppNamespace(), \KodiCMS\ModulesLoader\AppModuleContainer::class);
     }
 
     /**
