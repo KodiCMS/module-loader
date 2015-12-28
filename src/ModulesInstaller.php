@@ -48,11 +48,11 @@ class ModulesInstaller
     }
 
     /**
-     * @param bool $pretend
+     * @param array $options
      *
      * @return $this
      */
-    public function migrateModules($pretend = false)
+    public function migrateModules(array $options = [])
     {
         $this->output('Starting process of migration...');
 
@@ -62,7 +62,7 @@ class ModulesInstaller
 
         sort($this->migrations);
 
-        $this->migrator->runMigrationList(array_unique($this->migrations), $pretend);
+        $this->migrator->runMigrationList(array_unique($this->migrations), $options);
 
         foreach ($this->migrator->getNotes() as $note) {
             $this->output(' - '.$note);
