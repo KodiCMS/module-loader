@@ -39,22 +39,22 @@ class ModulesLoader
 
         foreach ($modulesList as $moduleName => $modulePath) {
             $moduleNamespace = null;
+            $moduleInfo = [];
 
             if (is_array($modulePath)) {
+                $moduleInfo      = $modulePath;
                 $moduleNamespace = array_get($modulePath, 'namespace');
-                $modulePath = array_get($modulePath, 'path');
-            } else {
-                if (is_numeric($moduleName)) {
-                    $moduleName = $modulePath;
-                    $modulePath = null;
-                }
+                $modulePath      = array_get($modulePath, 'path');
+            } else if (is_numeric($moduleName)) {
+                $moduleName = $modulePath;
+                $modulePath = null;
             }
 
             if (is_null($modulePath)) {
                 $modulePath = base_path('modules'.DIRECTORY_SEPARATOR.$moduleName);
             }
 
-            $this->addModule($moduleName, $modulePath, $moduleNamespace);
+            $this->addModule($moduleName, $modulePath, $moduleNamespace, null, $moduleInfo);
         }
 
         $this->addModule('App', base_path(), $this->getAppNamespace(), \KodiCMS\ModulesLoader\AppModuleContainer::class);
@@ -83,10 +83,11 @@ class ModulesLoader
      * @param string|null $modulePath
      * @param string|null $namespace
      * @param string|null $moduleContainerClass
+     * @param array       $moduleInfo
      *
      * @return $this
      */
-    public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null)
+    public function addModule($moduleName, $modulePath = null, $namespace = null, $moduleContainerClass = null, array $moduleInfo = [])
     {
         if (is_null($namespace)) {
             $namespace = 'Modules\\'.$moduleName;
@@ -110,7 +111,7 @@ class ModulesLoader
                 : \KodiCMS\ModulesLoader\ModuleContainer::class;
         }
 
-        $moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace);
+        $moduleContainer = new $moduleContainerClass($moduleName, $modulePath, $namespace, $moduleInfo);
 
         $this->registerModule($moduleContainer);
 

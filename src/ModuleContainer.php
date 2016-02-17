@@ -43,6 +43,11 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     protected $namespace = 'Modules';
 
     /**
+     * @var array
+     */
+    protected $info = [];
+
+    /**
      * This namespace is applied to the controller routes in your routes file.
      *
      * In addition, it is set as the URL generator's root namespace.
@@ -55,8 +60,9 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
      * @param string      $moduleName
      * @param null|string $modulePath
      * @param null|string $namespace
+     * @param array       $info
      */
-    public function __construct($moduleName, $modulePath = null, $namespace = null)
+    public function __construct($moduleName, $modulePath = null, $namespace = null, array $info = [])
     {
         if (empty($modulePath)) {
             $modulePath = $this->getDefaultModulePath($moduleName);
@@ -64,6 +70,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 
         $this->path = normalize_path($modulePath);
         $this->name = $moduleName;
+        $this->info = $info;
 
         $this->setNamespace($namespace);
     }
@@ -84,6 +91,14 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInfo()
+    {
+        return $this->info;
     }
 
     /**
