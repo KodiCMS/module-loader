@@ -61,7 +61,7 @@ class ModulesLoader
     }
 
     /**
-     * @return array
+     * @return ModuleContainerInterface[]
      */
     public function getRegisteredModules()
     {
