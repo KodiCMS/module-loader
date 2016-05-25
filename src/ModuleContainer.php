@@ -57,6 +57,11 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     protected $controllerNamespacePrefix = 'Http\\Controllers';
 
     /**
+     * @var \Illuminate\Support\ServiceProvider|null
+     */
+    protected $provider;
+
+    /**
      * @param string      $moduleName
      * @param null|string $modulePath
      * @param null|string $namespace
@@ -201,6 +206,14 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
     }
 
     /**
+     * @return \Illuminate\Support\ServiceProvider|null
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+
+    /**
      * @param \Illuminate\Foundation\Application $app
      *
      * @return $this
@@ -228,7 +241,7 @@ class ModuleContainer implements ModuleContainerInterface, Jsonable, Arrayable
 
             $serviceProviderPath = $this->getServiceProviderPath();
             if (is_file($serviceProviderPath)) {
-                $app->register($this->getNamespace().'\Providers\ModuleServiceProvider');
+                $this->provider = $app->register($this->getNamespace().'\Providers\ModuleServiceProvider');
             }
 
             $this->isRegistered = true;
