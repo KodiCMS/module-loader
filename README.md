@@ -7,14 +7,14 @@ https://packagist.org/packages/kodicms/module-loader
 
 Для установки пакета вы можете выполнить консольную комманду
 
-`composer require "kodicms/module-loader:~2.1"`
+`composer require "kodicms/module-loader:3.*"`
 
 Или добавить пакет в `composer.json`
 <pre>
 {
   "require": {
     ...
-    "kodicms/module-loader": "~2.1"
+    "kodicms/module-loader": "3.*"
        ...
   }
 }
